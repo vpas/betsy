@@ -1,0 +1,181 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Query {
+  bets(limit: Int, offset: Int, where: bets_WhereInput, orderBy: bets_OrderByInput): [bets]
+  count_bets(where: bets_WhereInput): Int
+  tasks(limit: Int, offset: Int, where: tasks_WhereInput, orderBy: tasks_OrderByInput): [tasks]
+  count_tasks(where: tasks_WhereInput): Int
+  users(limit: Int, offset: Int, where: users_WhereInput, orderBy: users_OrderByInput): [users]
+  count_users(where: users_WhereInput): Int
+}
+
+type bets {
+  id: Int!
+  created_by: Int!
+  accepted_by: Int
+  mirror_bet_id: Int
+  bet_condition: bets_bet_condition!
+  term: Time!
+  bet_amount: UnsignedInt!
+  bets(limit: Int, offset: Int, where: bets_WhereInput, orderBy: bets_OrderByInput): [bets]
+  users(where: users_WhereInput, orderBy: users_OrderByInput, limit: Int, offset: Int): [users]
+}
+
+enum bets_bet_condition {
+  done_in_time
+  not_done_in_time
+}
+
+"A time string at UTC, such as 10:15:30Z, compliant with the `full-time` format outlined in section 5.6 of the RFC 3339profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar."
+scalar Time
+
+"Integers that will have a value of 0 or more."
+scalar UnsignedInt
+
+input bets_WhereInput {
+  id: String
+  created_by: String
+  accepted_by: String
+  mirror_bet_id: String
+  bet_condition: String
+  term: String
+  bet_amount: String
+}
+
+input bets_OrderByInput {
+  id: OrderBy
+  created_by: OrderBy
+  accepted_by: OrderBy
+  mirror_bet_id: OrderBy
+  bet_condition: OrderBy
+  term: OrderBy
+  bet_amount: OrderBy
+}
+
+enum OrderBy {
+  asc
+  desc
+}
+
+type users {
+  id: Int!
+  username: String!
+  email: String!
+  bets(limit: Int, offset: Int, where: bets_WhereInput, orderBy: bets_OrderByInput): [bets]
+  tasks(limit: Int, offset: Int, where: tasks_WhereInput, orderBy: tasks_OrderByInput): [tasks]
+}
+
+type tasks {
+  id: Int!
+  created_by: Int!
+  title: String!
+  description: String
+  state: tasks_state!
+  started_at: DateTime
+  users(where: users_WhereInput, orderBy: users_OrderByInput, limit: Int, offset: Int): [users]
+}
+
+enum tasks_state {
+  accept_bets
+  bets_finalized
+  in_progress
+  done
+  abandoned
+}
+
+"A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar."
+scalar DateTime
+
+input users_WhereInput {
+  id: String
+  username: String
+  email: String
+}
+
+input users_OrderByInput {
+  id: OrderBy
+  username: OrderBy
+  email: OrderBy
+}
+
+input tasks_WhereInput {
+  id: String
+  created_by: String
+  title: String
+  description: String
+  state: String
+  started_at: String
+}
+
+input tasks_OrderByInput {
+  id: OrderBy
+  created_by: OrderBy
+  title: OrderBy
+  description: OrderBy
+  state: OrderBy
+  started_at: OrderBy
+}
+
+type Mutation {
+  insert_bets(bets: bets_InsertInput!): bets
+  update_bets(bets: bets_UpdateInput!, where: bets_WhereInput): bets
+  delete_bets(where: bets_WhereInput): Boolean
+  insert_tasks(tasks: tasks_InsertInput!): tasks
+  update_tasks(tasks: tasks_UpdateInput!, where: tasks_WhereInput): tasks
+  delete_tasks(where: tasks_WhereInput): Boolean
+  insert_users(users: users_InsertInput!): users
+  update_users(users: users_UpdateInput!, where: users_WhereInput): users
+  delete_users(where: users_WhereInput): Boolean
+}
+
+input bets_InsertInput {
+  id: Int!
+  created_by: Int!
+  accepted_by: Int
+  mirror_bet_id: Int
+  bet_condition: bets_bet_condition!
+  term: Time!
+  bet_amount: UnsignedInt!
+}
+
+input bets_UpdateInput {
+  id: Int
+  created_by: Int
+  accepted_by: Int
+  mirror_bet_id: Int
+  bet_condition: bets_bet_condition
+  term: Time
+  bet_amount: UnsignedInt
+}
+
+input tasks_InsertInput {
+  id: Int!
+  created_by: Int!
+  title: String!
+  description: String
+  state: tasks_state!
+  started_at: DateTime
+}
+
+input tasks_UpdateInput {
+  id: Int
+  created_by: Int
+  title: String
+  description: String
+  state: tasks_state
+  started_at: DateTime
+}
+
+input users_InsertInput {
+  username: String!
+  email: String!
+}
+
+input users_UpdateInput {
+  id: Int
+  username: String
+  email: String
+}

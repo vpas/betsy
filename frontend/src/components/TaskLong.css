@@ -1,0 +1,75 @@
+.task-long {
+    border: 0px solid;
+    border-color: rgb(228, 231, 237);
+    border-radius: 16px;
+    background-color: rgba(255, 255, 255, 0.031);
+    height: 200px;
+    width: 335px;
+}
+
+.task-long .text-wrapper {
+    color: var(--color-grey-light);
+    font-family: "Roboto-Regular", Helvetica;
+    font-size: 16px;
+    font-weight: 400;
+    left: 19px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 62px;
+    width: 295px;
+}
+
+.task-long .amount-of-money {
+    color: var(--color-grey-medium);
+    font-family: "Roboto-SemiBold", Helvetica;
+    font-size: 32px;
+    font-weight: 600;
+    height: 24px;
+    left: 239px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    text-align: right;
+    top: 18px;
+    white-space: nowrap;
+    width: 41px;
+}
+
+.task-long .icon-star {
+    height: 32px;
+    left: 282px;
+    position: absolute;
+    top: 13px;
+    width: 32px;
+}
+
+.task-long .time-left {
+    color: var(--color-grey-light);
+    font-family: "Roboto-Regular", Helvetica;
+    font-size: 16px;
+    font-weight: 400;
+    height: 20px;
+    left: 19px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 34px;
+    width: 88px;
+}
+
+.task-long .name {
+    color: var(--color-grey-medium);
+    font-family: "Roboto-SemiBold", Helvetica;
+    font-size: 20px;
+    font-weight: 600;
+    height: 24px;
+    left: 19px;
+    letter-spacing: 0;
+    line-height: normal;
+    position: absolute;
+    top: 8px;
+    white-space: nowrap;
+    width: 109px;
+}
+

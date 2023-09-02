@@ -1,0 +1,30 @@
+.logo-wrapper {
+    display: flex;
+    height: 40px;
+    
+    justify-content: center;
+    align-items: center;
+    top: 60px;
+    position: relative;
+    align-self: center;
+}
+
+.logo {
+    width: fit-content;
+    color: hsla(177, 64%, 52%, 1);
+    -webkit-text-fill-color: transparent; 
+    -moz-text-fill-color: transparent;
+    background: 
+        linear-gradient(270deg, rgba(245.78, 249.69, 54.1, 0.4) 0%, rgba(246, 250, 54, 0) 100%),
+        hsla(177, 64%, 52%, 1);
+    background-blend-mode: screen;
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-size: 100%;
+    text-align: center;
+    font-family: Poppins;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
