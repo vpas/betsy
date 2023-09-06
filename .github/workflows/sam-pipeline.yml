@@ -23,9 +23,13 @@ jobs:
             # - run: docker build -t betsy-backend .
             # - run: docker tag betsy-backend:latest 665175433689.dkr.ecr.eu-central-1.amazonaws.com/betsy-backend:latest
             # - run: docker push 665175433689.dkr.ecr.eu-central-1.amazonaws.com/betsy-backend:latest
+
+            - run: npm install
+              working-directory: ./backend/betsy-backend
+
             # sam build 
             - run: sam build
-
+            
         # Run Unit tests- Specify unit tests here 
 
         # sam deploy
