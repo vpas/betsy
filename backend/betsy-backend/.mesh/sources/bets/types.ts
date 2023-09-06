@@ -293,7 +293,7 @@ export type bets_UpdateInput = {
 };
 
 export type tasks_InsertInput = {
-  id: Scalars['Int']['input'];
+  id?: InputMaybe<Scalars['Int']['input']>;
   created_by: Scalars['Int']['input'];
   title: Scalars['String']['input'];
   description?: InputMaybe<Scalars['String']['input']>;

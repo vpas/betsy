@@ -1,30 +1,12 @@
 // @ts-nocheck
 import { GraphQLResolveInfo, SelectionSetNode, FieldNode, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import type { GetMeshOptions } from '@graphql-mesh/runtime';
-import type { YamlConfig } from '@graphql-mesh/types';
-import { PubSub } from '@graphql-mesh/utils';
-import { DefaultLogger } from '@graphql-mesh/utils';
-import MeshCache from "@graphql-mesh/cache-localforage";
-import { fetch as fetchFn } from '@whatwg-node/fetch';
-
-import { MeshResolvedSource } from '@graphql-mesh/runtime';
-import { MeshTransform, MeshPlugin } from '@graphql-mesh/types';
-import MysqlHandler from "@graphql-mesh/mysql"
-import FilterSchemaTransform from "@graphql-mesh/transform-filter-schema";
-import BareMerger from "@graphql-mesh/merger-bare";
+import { findAndParseConfig } from '@graphql-mesh/cli';
 import { createMeshHTTPHandler, MeshHTTPHandler } from '@graphql-mesh/http';
 import { getMesh, ExecuteMeshFn, SubscribeMeshFn, MeshContext as BaseMeshContext, MeshInstance } from '@graphql-mesh/runtime';
 import { MeshStore, FsStoreStorageAdapter } from '@graphql-mesh/store';
 import { path as pathModule } from '@graphql-mesh/cross-helpers';
 import { ImportFn } from '@graphql-mesh/types';
 import type { BetsTypes } from './sources/bets/types';
-import * as importedModule$0 from "./sources/bets/getDatabaseTables_main";
-import * as importedModule$1 from "./sources/bets/getTableFields_bets";
-import * as importedModule$2 from "./sources/bets/getTableFields_tasks";
-import * as importedModule$3 from "./sources/bets/getTableFields_users";
-import * as importedModule$4 from "./sources/bets/getTableForeigns_bets";
-import * as importedModule$5 from "./sources/bets/getTableForeigns_tasks";
-import * as importedModule$6 from "./sources/bets/getTableForeigns_users";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -318,7 +300,7 @@ export type bets_UpdateInput = {
 };
 
 export type tasks_InsertInput = {
-  id: Scalars['Int']['input'];
+  id?: InputMaybe<Scalars['Int']['input']>;
   created_by: Scalars['Int']['input'];
   title: Scalars['String']['input'];
   description?: InputMaybe<Scalars['String']['input']>;
@@ -573,27 +555,6 @@ const baseDir = pathModule.join(typeof __dirname === 'string' ? __dirname : '/',
 const importFn: ImportFn = <T>(moduleId: string) => {
   const relativeModuleId = (pathModule.isAbsolute(moduleId) ? pathModule.relative(baseDir, moduleId) : moduleId).split('\\').join('/').replace(baseDir + '/', '');
   switch(relativeModuleId) {
-    case ".mesh/sources/bets/getDatabaseTables_main":
-      return Promise.resolve(importedModule$0) as T;
-    
-    case ".mesh/sources/bets/getTableFields_bets":
-      return Promise.resolve(importedModule$1) as T;
-    
-    case ".mesh/sources/bets/getTableFields_tasks":
-      return Promise.resolve(importedModule$2) as T;
-    
-    case ".mesh/sources/bets/getTableFields_users":
-      return Promise.resolve(importedModule$3) as T;
-    
-    case ".mesh/sources/bets/getTableForeigns_bets":
-      return Promise.resolve(importedModule$4) as T;
-    
-    case ".mesh/sources/bets/getTableForeigns_tasks":
-      return Promise.resolve(importedModule$5) as T;
-    
-    case ".mesh/sources/bets/getTableForeigns_users":
-      return Promise.resolve(importedModule$6) as T;
-    
     default:
       return Promise.reject(new Error(`Cannot find module '${relativeModuleId}'.`));
   }
@@ -608,73 +569,15 @@ const rootStore = new MeshStore('.mesh', new FsStoreStorageAdapter({
   validate: false
 });
 
-export const rawServeConfig: YamlConfig.Config['serve'] = undefined as any
-export async function getMeshOptions(): Promise<GetMeshOptions> {
-const pubsub = new PubSub();
-const sourcesStore = rootStore.child('sources');
-const logger = new DefaultLogger("🕸️  Mesh");
-const cache = new (MeshCache as any)({
-      ...({} as any),
-      importFn,
-      store: rootStore.child('cache'),
-      pubsub,
-      logger,
-    } as any)
-
-const sources: MeshResolvedSource[] = [];
-const transforms: MeshTransform[] = [];
-const additionalEnvelopPlugins: MeshPlugin<any>[] = [];
-const betsTransforms = [];
-const additionalTypeDefs = [] as any[];
-const betsHandler = new MysqlHandler({
-              name: "bets",
-              config: {"host":"betsy.c9wzmnw9mmdm.eu-central-1.rds.amazonaws.com","port":3306,"user":"admin","password":"AizdhmakEPQxOts3XvCl","database":"main"},
-              baseDir,
-              cache,
-              pubsub,
-              store: sourcesStore.child("bets"),
-              logger: logger.child("bets"),
-              importFn,
-            });
-betsTransforms[0] = new FilterSchemaTransform({
-                  apiName: "bets",
-                  config: {"mode":"bare","filters":["users_InsertInput.!id"]},
-                  baseDir,
-                  cache,
-                  pubsub,
-                  importFn,
-                  logger,
-                });
-sources[0] = {
-          name: 'bets',
-          handler: betsHandler,
-          transforms: betsTransforms
-        }
-const additionalResolvers = [] as any[]
-const merger = new(BareMerger as any)({
-        cache,
-        pubsub,
-        logger: logger.child('bareMerger'),
-        store: rootStore.child('bareMerger')
-      })
-
-  return {
-    sources,
-    transforms,
-    additionalTypeDefs,
-    additionalResolvers,
-    cache,
-    pubsub,
-    merger,
-    logger,
-    additionalEnvelopPlugins,
-    get documents() {
-      return [
-      
-    ];
-    },
-    fetchFn,
-  };
+export function getMeshOptions() {
+  console.warn('WARNING: These artifacts are built for development mode. Please run "mesh build" to build production artifacts');
+  return findAndParseConfig({
+    dir: baseDir,
+    artifactsDir: ".mesh",
+    configName: "mesh",
+    additionalPackagePrefixes: [],
+    initialLoggerPrefix: "🕸️  Mesh",
+  });
 }
 
 export function createBuiltMeshHTTPHandler<TServerContext = {}>(): MeshHTTPHandler<TServerContext> {
@@ -684,7 +587,6 @@ export function createBuiltMeshHTTPHandler<TServerContext = {}>(): MeshHTTPHandl
     rawServeConfig: undefined,
   })
 }
-
 
 let meshInstance$: Promise<MeshInstance> | undefined;
 

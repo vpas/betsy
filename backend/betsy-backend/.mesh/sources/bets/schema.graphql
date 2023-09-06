@@ -152,7 +152,7 @@ input bets_UpdateInput {
 }
 
 input tasks_InsertInput {
-  id: Int!
+  id: Int
   created_by: Int!
   title: String!
   description: String
