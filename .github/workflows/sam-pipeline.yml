@@ -27,7 +27,7 @@ jobs:
             - run: npm install
               working-directory: ./backend/betsy-backend
 
-            - run: npm install esbuild
+            - run: npm install -g esbuild
             # sam build 
             - run: sam build
             

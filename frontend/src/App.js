@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import Home from './screens/Home';
+import { useQuery, gql } from '@apollo/client';
 
 function App() {
   return (
