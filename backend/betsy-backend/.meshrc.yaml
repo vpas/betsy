@@ -18,3 +18,5 @@ sources:
           mode: bare
           filters:
             - users_InsertInput.!id
+            - tasks_InsertInput.!id
+            - bets_InsertInput.!id

@@ -1,0 +1,25 @@
+.button-wrapper {
+    align-items: center;
+    background-color: #36D3CA;
+    border-radius: 12px;
+    display: inline-flex;
+    gap: 8px;
+    justify-content: center;
+    overflow: hidden;
+    padding: 16px 64px;
+    position: relative;
+    cursor: pointer;
+}
+
+.button-wrapper .button {
+    color: #ffffff;
+    font-family: "Poppins-SemiBold", Helvetica;
+    font-size: 22px;
+    font-weight: 600;
+    height: 20px;
+    letter-spacing: 0;
+    line-height: normal;
+    margin-top: -1px;
+    position: relative;
+    white-space: nowrap;
+}
