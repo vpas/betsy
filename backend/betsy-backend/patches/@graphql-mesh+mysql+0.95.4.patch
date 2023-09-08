@@ -1,0 +1,13 @@
+diff --git a/node_modules/@graphql-mesh/mysql/cjs/index.js b/node_modules/@graphql-mesh/mysql/cjs/index.js
+index 5dc1de3..a5c5ef3 100644
+--- a/node_modules/@graphql-mesh/mysql/cjs/index.js
++++ b/node_modules/@graphql-mesh/mysql/cjs/index.js
+@@ -111,7 +111,7 @@ class MySQLHandler {
+                     return promisifiedConnection$?.then(promisifiedConnection => promisifiedConnection?.connection);
+                 }
+                 return async (...args) => {
+-                    const cacheKey = [methodName, ...args].join('_');
++                    const cacheKey = [methodName, ...args].join('_').replaceAll('"', '_').replaceAll(' ', '_').replaceAll('%', '_');
+                     const cacheProxy = this.store.proxy(cacheKey, store_1.PredefinedProxyOptions.JsonWithoutValidation);
+                     return cacheProxy.getWithSet(async () => {
+                         promisifiedConnection$ = promisifiedConnection$ || getPromisifiedConnection(pool);
