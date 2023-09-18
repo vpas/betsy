@@ -1,0 +1,40 @@
+.user-info {
+    width: 250px;
+}
+
+.user-info .username {
+    position: absolute;
+    top: 0px;
+    left: 20px;
+
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    opacity: 0.9;
+    text-align: left;
+}
+
+.user-info .stars {
+    position: absolute;
+    top: 0px;
+    right: 28px;
+
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    opacity: 0.9;
+    text-align: right;
+}
+
+.user-info .icon-star {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    scale: 0.5;
+}

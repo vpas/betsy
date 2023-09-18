@@ -1,0 +1,37 @@
+.history {
+
+}
+
+.history .tab {
+    position: absolute;
+    top: 126px;
+
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    opacity: 0.5;
+}
+
+.history .tab.tasks {
+    left: 126px;
+    text-align: left;
+}
+
+.history .tab.bets {
+    right: 126px;
+    text-align: right;
+}
+
+.history .tab.active {
+    opacity: 0.9;
+}
+
+.history .list-wrapper {
+    position: absolute;
+    top: 174px;
+    width: 335px;
+    left: 20px
+}

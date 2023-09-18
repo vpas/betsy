@@ -1,0 +1,16 @@
+.btn-create-task {
+    border: 1px solid;
+    border-color: #e3e6ed;
+    border-radius: 16px;
+    height: 144px;
+    position: relative;
+    width: 335px;
+}
+
+.btn-create-task .icon-plus {
+    height: 48px;
+    left: 143px;
+    position: absolute;
+    top: 47px;
+    width: 48px;
+}

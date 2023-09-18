@@ -1,0 +1,36 @@
+.task-short {
+    position: relative;
+    height: 64px;
+    width: 100%;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    margin-bottom: 16px;
+}
+
+.task-short .title {
+    position: absolute;
+    left: 20px;
+    top: 11px;
+
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    opacity: 0.9;
+}
+
+.task-short .status {
+    position: absolute;
+    left: 20px;
+    top: 37px;
+
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    opacity: 0.4;
+}

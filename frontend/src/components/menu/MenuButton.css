@@ -1,0 +1,34 @@
+:root {
+    --menu-button-color: rgba(255, 255, 255, 0.2);
+    --menu-button-active-color: rgba(255, 255, 255, 0.6);
+}
+
+.menu-button {
+    width: 48px;
+    height: 82px;
+    margin-top: 4px;
+    margin-left: 22px;
+    margin-right: 22px;
+}
+
+.menu-button .text {
+    -webkit-text-fill-color: var(--menu-button-color);
+    position: absolute;
+    top: 47px;
+    text-align: center;
+    width: 48px;
+    
+}
+
+.menu-button .icon {
+    position: absolute;
+    top: 0px;
+    stroke-opacity: 0.2;
+}
+
+.menu-button.active .text {
+    -webkit-text-fill-color: var(--menu-button-active-color);
+}
+.menu-button.active .icon {
+    stroke-opacity: 0.6;
+}

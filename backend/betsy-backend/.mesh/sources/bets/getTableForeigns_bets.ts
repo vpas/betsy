@@ -8,6 +8,14 @@ export default {
     "REFERENCED_TABLE_NAME": "bets",
     "REFERENCED_COLUMN_NAME": "id"
   },
+  "task_id": {
+    "CONSTRAINT_NAME": "task_id",
+    "COLUMN_NAME": "task_id",
+    "ORDINAL_POSITION": 1,
+    "POSITION_IN_UNIQUE_CONSTRAINT": 1,
+    "REFERENCED_TABLE_NAME": "tasks",
+    "REFERENCED_COLUMN_NAME": "id"
+  },
   "accepted_by": {
     "CONSTRAINT_NAME": "accepted_by",
     "COLUMN_NAME": "id",

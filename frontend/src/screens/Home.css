@@ -1,13 +1,23 @@
 .section-title.your-task {
-    position: relative;
-    top: 100px;
+    position: absolute;
+    top: 146px;
 }
 
-.home .task-long {
-    position: relative;
-    top: 100px;
+.home .user-info {
+    position: absolute;
+    top: 110px;
+    left: 50%;
+    transform: translateX(-50%);
 }
+
+.home .task-block-wrapper {
+    position: absolute;
+    top: 174px;
+    left: 20px;
+    width: 100%;
+}
+
 .section-title.your-bets {
-    position: relative;
-    top: 100px;
+    position: absolute;
+    top: 414px;
 }

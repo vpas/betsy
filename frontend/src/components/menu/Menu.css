@@ -1,0 +1,10 @@
+.menu {
+    position: fixed;
+    bottom: 0px;
+    height: 82px;
+    width: 100%;
+    display: flex;
+    align-self: center;
+    justify-content: center;
+    background-color: #1A1C1C;
+}

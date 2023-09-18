@@ -1,0 +1,93 @@
+.task-editor {
+
+}
+
+.task-editor .create-edit-label {
+    position: absolute;
+    left: 20px;
+    top: 146px;
+}
+
+.task-editor .input-wrapper {
+    position: absolute;
+    left: 20px;
+    width: 335px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.task-editor .input {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 20px;
+    border: none;
+    background: none;
+    
+    /* color: #FFFFFF; */
+    color: white;
+    font-family: Poppins;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    opacity: 0.9;
+    outline: none;
+}
+
+.task-editor .title-wrapper {
+    top: 174px;
+    height: 64px;
+}
+
+.task-editor .title {
+    
+}
+
+.task-editor .description-wrapper {
+    top: 262px;
+    height: 224px;
+}
+
+.task-editor .description {
+    top: 20px;
+    resize: none;
+}
+
+.task-editor .term-hours {
+    position: absolute;
+    top: 518px;
+}
+
+.task-editor .bet-amount {
+    position: absolute;
+    top: 588px;
+}
+
+.task-editor .create-button {
+    position: absolute;
+    top: 680px;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
+
+.task-editor .save-button {
+    position: absolute;
+    top: 680px;
+    left: 50%;
+    transform: translate(-120%, 0);
+}
+
+.task-editor .delete-button {
+    position: absolute;
+    top: 680px;
+    left: 50%;
+    transform: translate(20%, 0);
+}
+
+.task-editor .footer {
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    top: 760px;
+}

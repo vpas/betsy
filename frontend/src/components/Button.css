@@ -6,9 +6,10 @@
     gap: 8px;
     justify-content: center;
     overflow: hidden;
-    padding: 16px 64px;
+    padding: 16px 0px;
     position: relative;
     cursor: pointer;
+    width: 120px;
 }
 
 .button-wrapper .button {

@@ -76,5 +76,16 @@ export default {
     "Extra": "",
     "Privileges": "select,insert,update,references",
     "Comment": ""
+  },
+  "task_id": {
+    "Field": "task_id",
+    "Type": "int",
+    "Collation": null,
+    "Null": "NO",
+    "Key": "MUL",
+    "Default": null,
+    "Extra": "",
+    "Privileges": "select,insert,update,references",
+    "Comment": ""
   }
 }

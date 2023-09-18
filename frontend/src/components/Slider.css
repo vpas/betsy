@@ -1,0 +1,41 @@
+.slider-wrapper {
+    width: 100%;
+}
+
+.slider-wrapper .label {
+    position: absolute;
+    left: 40px;
+    top: 12px;
+
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    text-transform: uppercase;
+    opacity: 0.2;
+}
+
+.slider-wrapper .value {
+    position: absolute;
+    right: 40px;
+    top: 0px;
+    
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 26px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    text-transform: uppercase;
+    text-align: right;
+}
+
+.slider-wrapper .slider {
+    position: absolute;
+    left: 22px;
+    top: 45px;
+    width: 332px;
+    height: 2px;
+}

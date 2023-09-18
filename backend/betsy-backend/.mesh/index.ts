@@ -1,12 +1,31 @@
 // @ts-nocheck
 import { GraphQLResolveInfo, SelectionSetNode, FieldNode, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
-import { findAndParseConfig } from '@graphql-mesh/cli';
+import type { GetMeshOptions } from '@graphql-mesh/runtime';
+import type { YamlConfig } from '@graphql-mesh/types';
+import { PubSub } from '@graphql-mesh/utils';
+import { DefaultLogger } from '@graphql-mesh/utils';
+import MeshCache from "@graphql-mesh/cache-localforage";
+import { fetch as fetchFn } from '@whatwg-node/fetch';
+
+import { MeshResolvedSource } from '@graphql-mesh/runtime';
+import { MeshTransform, MeshPlugin } from '@graphql-mesh/types';
+import MysqlHandler from "@graphql-mesh/mysql"
+import FilterSchemaTransform from "@graphql-mesh/transform-filter-schema";
+import BareMerger from "@graphql-mesh/merger-bare";
 import { createMeshHTTPHandler, MeshHTTPHandler } from '@graphql-mesh/http';
 import { getMesh, ExecuteMeshFn, SubscribeMeshFn, MeshContext as BaseMeshContext, MeshInstance } from '@graphql-mesh/runtime';
 import { MeshStore, FsStoreStorageAdapter } from '@graphql-mesh/store';
 import { path as pathModule } from '@graphql-mesh/cross-helpers';
 import { ImportFn } from '@graphql-mesh/types';
 import type { BetsTypes } from './sources/bets/types';
+import * as importedModule$0 from "./sources/bets/getDatabaseTables_main";
+import * as importedModule$1 from "./sources/bets/queryKeyValue_SELECT_TABLE_NAME,_COLUMN_NAME_FROM_information_schema.columns_WHERE_EXTRA_LIKE___auto_increment___";
+import * as importedModule$2 from "./sources/bets/getTableFields_bets";
+import * as importedModule$3 from "./sources/bets/getTableFields_tasks";
+import * as importedModule$4 from "./sources/bets/getTableFields_users";
+import * as importedModule$5 from "./sources/bets/getTableForeigns_bets";
+import * as importedModule$6 from "./sources/bets/getTableForeigns_tasks";
+import * as importedModule$7 from "./sources/bets/getTableForeigns_users";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -92,7 +111,9 @@ export type bets = {
   bet_condition: bets_bet_condition;
   term: Scalars['Time']['output'];
   bet_amount: Scalars['UnsignedInt']['output'];
+  task_id: Scalars['Int']['output'];
   bets?: Maybe<Array<Maybe<bets>>>;
+  tasks?: Maybe<Array<Maybe<tasks>>>;
   users?: Maybe<Array<Maybe<users>>>;
 };
 
@@ -102,6 +123,14 @@ export type betsbetsArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<bets_WhereInput>;
   orderBy?: InputMaybe<bets_OrderByInput>;
+};
+
+
+export type betstasksArgs = {
+  where?: InputMaybe<tasks_WhereInput>;
+  orderBy?: InputMaybe<tasks_OrderByInput>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -124,6 +153,7 @@ export type bets_WhereInput = {
   bet_condition?: InputMaybe<Scalars['String']['input']>;
   term?: InputMaybe<Scalars['String']['input']>;
   bet_amount?: InputMaybe<Scalars['String']['input']>;
+  task_id?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type bets_OrderByInput = {
@@ -134,11 +164,46 @@ export type bets_OrderByInput = {
   bet_condition?: InputMaybe<OrderBy>;
   term?: InputMaybe<OrderBy>;
   bet_amount?: InputMaybe<OrderBy>;
+  task_id?: InputMaybe<OrderBy>;
 };
 
 export type OrderBy =
   | 'asc'
   | 'desc';
+
+export type tasks = {
+  id: Scalars['Int']['output'];
+  created_by: Scalars['Int']['output'];
+  title: Scalars['String']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  state: tasks_state;
+  started_at?: Maybe<Scalars['DateTime']['output']>;
+  bets?: Maybe<Array<Maybe<bets>>>;
+  users?: Maybe<Array<Maybe<users>>>;
+};
+
+
+export type tasksbetsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<bets_WhereInput>;
+  orderBy?: InputMaybe<bets_OrderByInput>;
+};
+
+
+export type tasksusersArgs = {
+  where?: InputMaybe<users_WhereInput>;
+  orderBy?: InputMaybe<users_OrderByInput>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type tasks_state =
+  | 'accept_bets'
+  | 'bets_finalized'
+  | 'in_progress'
+  | 'done'
+  | 'abandoned';
 
 export type users = {
   id: Scalars['Int']['output'];
@@ -164,43 +229,6 @@ export type userstasksArgs = {
   orderBy?: InputMaybe<tasks_OrderByInput>;
 };
 
-export type tasks = {
-  id: Scalars['Int']['output'];
-  created_by: Scalars['Int']['output'];
-  title: Scalars['String']['output'];
-  description?: Maybe<Scalars['String']['output']>;
-  state: tasks_state;
-  started_at?: Maybe<Scalars['DateTime']['output']>;
-  users?: Maybe<Array<Maybe<users>>>;
-};
-
-
-export type tasksusersArgs = {
-  where?: InputMaybe<users_WhereInput>;
-  orderBy?: InputMaybe<users_OrderByInput>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type tasks_state =
-  | 'accept_bets'
-  | 'bets_finalized'
-  | 'in_progress'
-  | 'done'
-  | 'abandoned';
-
-export type users_WhereInput = {
-  id?: InputMaybe<Scalars['String']['input']>;
-  username?: InputMaybe<Scalars['String']['input']>;
-  email?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type users_OrderByInput = {
-  id?: InputMaybe<OrderBy>;
-  username?: InputMaybe<OrderBy>;
-  email?: InputMaybe<OrderBy>;
-};
-
 export type tasks_WhereInput = {
   id?: InputMaybe<Scalars['String']['input']>;
   created_by?: InputMaybe<Scalars['String']['input']>;
@@ -217,6 +245,18 @@ export type tasks_OrderByInput = {
   description?: InputMaybe<OrderBy>;
   state?: InputMaybe<OrderBy>;
   started_at?: InputMaybe<OrderBy>;
+};
+
+export type users_WhereInput = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type users_OrderByInput = {
+  id?: InputMaybe<OrderBy>;
+  username?: InputMaybe<OrderBy>;
+  email?: InputMaybe<OrderBy>;
 };
 
 export type Mutation = {
@@ -280,13 +320,13 @@ export type Mutationdelete_usersArgs = {
 };
 
 export type bets_InsertInput = {
-  id: Scalars['Int']['input'];
   created_by: Scalars['Int']['input'];
   accepted_by?: InputMaybe<Scalars['Int']['input']>;
   mirror_bet_id?: InputMaybe<Scalars['Int']['input']>;
   bet_condition: bets_bet_condition;
   term: Scalars['Time']['input'];
   bet_amount: Scalars['UnsignedInt']['input'];
+  task_id: Scalars['Int']['input'];
 };
 
 export type bets_UpdateInput = {
@@ -297,10 +337,10 @@ export type bets_UpdateInput = {
   bet_condition?: InputMaybe<bets_bet_condition>;
   term?: InputMaybe<Scalars['Time']['input']>;
   bet_amount?: InputMaybe<Scalars['UnsignedInt']['input']>;
+  task_id?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type tasks_InsertInput = {
-  id?: InputMaybe<Scalars['Int']['input']>;
   created_by: Scalars['Int']['input'];
   title: Scalars['String']['input'];
   description?: InputMaybe<Scalars['String']['input']>;
@@ -424,14 +464,14 @@ export type ResolversTypes = ResolversObject<{
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   bets_OrderByInput: bets_OrderByInput;
   OrderBy: OrderBy;
-  users: ResolverTypeWrapper<users>;
   tasks: ResolverTypeWrapper<tasks>;
   tasks_state: tasks_state;
   DateTime: ResolverTypeWrapper<Scalars['DateTime']['output']>;
-  users_WhereInput: users_WhereInput;
-  users_OrderByInput: users_OrderByInput;
+  users: ResolverTypeWrapper<users>;
   tasks_WhereInput: tasks_WhereInput;
   tasks_OrderByInput: tasks_OrderByInput;
+  users_WhereInput: users_WhereInput;
+  users_OrderByInput: users_OrderByInput;
   Mutation: ResolverTypeWrapper<{}>;
   bets_InsertInput: bets_InsertInput;
   bets_UpdateInput: bets_UpdateInput;
@@ -452,13 +492,13 @@ export type ResolversParentTypes = ResolversObject<{
   bets_WhereInput: bets_WhereInput;
   String: Scalars['String']['output'];
   bets_OrderByInput: bets_OrderByInput;
-  users: users;
   tasks: tasks;
   DateTime: Scalars['DateTime']['output'];
-  users_WhereInput: users_WhereInput;
-  users_OrderByInput: users_OrderByInput;
+  users: users;
   tasks_WhereInput: tasks_WhereInput;
   tasks_OrderByInput: tasks_OrderByInput;
+  users_WhereInput: users_WhereInput;
+  users_OrderByInput: users_OrderByInput;
   Mutation: {};
   bets_InsertInput: bets_InsertInput;
   bets_UpdateInput: bets_UpdateInput;
@@ -486,7 +526,9 @@ export type betsResolvers<ContextType = MeshContext, ParentType extends Resolver
   bet_condition?: Resolver<ResolversTypes['bets_bet_condition'], ParentType, ContextType>;
   term?: Resolver<ResolversTypes['Time'], ParentType, ContextType>;
   bet_amount?: Resolver<ResolversTypes['UnsignedInt'], ParentType, ContextType>;
+  task_id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   bets?: Resolver<Maybe<Array<Maybe<ResolversTypes['bets']>>>, ParentType, ContextType, Partial<betsbetsArgs>>;
+  tasks?: Resolver<Maybe<Array<Maybe<ResolversTypes['tasks']>>>, ParentType, ContextType, Partial<betstasksArgs>>;
   users?: Resolver<Maybe<Array<Maybe<ResolversTypes['users']>>>, ParentType, ContextType, Partial<betsusersArgs>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -499,6 +541,22 @@ export interface UnsignedIntScalarConfig extends GraphQLScalarTypeConfig<Resolve
   name: 'UnsignedInt';
 }
 
+export type tasksResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['tasks'] = ResolversParentTypes['tasks']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  created_by?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  state?: Resolver<ResolversTypes['tasks_state'], ParentType, ContextType>;
+  started_at?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
+  bets?: Resolver<Maybe<Array<Maybe<ResolversTypes['bets']>>>, ParentType, ContextType, Partial<tasksbetsArgs>>;
+  users?: Resolver<Maybe<Array<Maybe<ResolversTypes['users']>>>, ParentType, ContextType, Partial<tasksusersArgs>>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
+  name: 'DateTime';
+}
+
 export type usersResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['users'] = ResolversParentTypes['users']> = ResolversObject<{
   id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   username?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -507,21 +565,6 @@ export type usersResolvers<ContextType = MeshContext, ParentType extends Resolve
   tasks?: Resolver<Maybe<Array<Maybe<ResolversTypes['tasks']>>>, ParentType, ContextType, Partial<userstasksArgs>>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
-
-export type tasksResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['tasks'] = ResolversParentTypes['tasks']> = ResolversObject<{
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  created_by?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
-  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  state?: Resolver<ResolversTypes['tasks_state'], ParentType, ContextType>;
-  started_at?: Resolver<Maybe<ResolversTypes['DateTime']>, ParentType, ContextType>;
-  users?: Resolver<Maybe<Array<Maybe<ResolversTypes['users']>>>, ParentType, ContextType, Partial<tasksusersArgs>>;
-  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
-}>;
-
-export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
-  name: 'DateTime';
-}
 
 export type MutationResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   insert_bets?: Resolver<Maybe<ResolversTypes['bets']>, ParentType, ContextType, RequireFields<Mutationinsert_betsArgs, 'bets'>>;
@@ -540,9 +583,9 @@ export type Resolvers<ContextType = MeshContext> = ResolversObject<{
   bets?: betsResolvers<ContextType>;
   Time?: GraphQLScalarType;
   UnsignedInt?: GraphQLScalarType;
-  users?: usersResolvers<ContextType>;
   tasks?: tasksResolvers<ContextType>;
   DateTime?: GraphQLScalarType;
+  users?: usersResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
 }>;
 
@@ -555,6 +598,30 @@ const baseDir = pathModule.join(typeof __dirname === 'string' ? __dirname : '/',
 const importFn: ImportFn = <T>(moduleId: string) => {
   const relativeModuleId = (pathModule.isAbsolute(moduleId) ? pathModule.relative(baseDir, moduleId) : moduleId).split('\\').join('/').replace(baseDir + '/', '');
   switch(relativeModuleId) {
+    case ".mesh/sources/bets/getDatabaseTables_main":
+      return Promise.resolve(importedModule$0) as T;
+    
+    case ".mesh/sources/bets/queryKeyValue_SELECT_TABLE_NAME,_COLUMN_NAME_FROM_information_schema.columns_WHERE_EXTRA_LIKE___auto_increment___":
+      return Promise.resolve(importedModule$1) as T;
+    
+    case ".mesh/sources/bets/getTableFields_bets":
+      return Promise.resolve(importedModule$2) as T;
+    
+    case ".mesh/sources/bets/getTableFields_tasks":
+      return Promise.resolve(importedModule$3) as T;
+    
+    case ".mesh/sources/bets/getTableFields_users":
+      return Promise.resolve(importedModule$4) as T;
+    
+    case ".mesh/sources/bets/getTableForeigns_bets":
+      return Promise.resolve(importedModule$5) as T;
+    
+    case ".mesh/sources/bets/getTableForeigns_tasks":
+      return Promise.resolve(importedModule$6) as T;
+    
+    case ".mesh/sources/bets/getTableForeigns_users":
+      return Promise.resolve(importedModule$7) as T;
+    
     default:
       return Promise.reject(new Error(`Cannot find module '${relativeModuleId}'.`));
   }
@@ -569,15 +636,73 @@ const rootStore = new MeshStore('.mesh', new FsStoreStorageAdapter({
   validate: false
 });
 
-export function getMeshOptions() {
-  console.warn('WARNING: These artifacts are built for development mode. Please run "mesh build" to build production artifacts');
-  return findAndParseConfig({
-    dir: baseDir,
-    artifactsDir: ".mesh",
-    configName: "mesh",
-    additionalPackagePrefixes: [],
-    initialLoggerPrefix: "🕸️  Mesh",
-  });
+export const rawServeConfig: YamlConfig.Config['serve'] = undefined as any
+export async function getMeshOptions(): Promise<GetMeshOptions> {
+const pubsub = new PubSub();
+const sourcesStore = rootStore.child('sources');
+const logger = new DefaultLogger("🕸️  Mesh");
+const cache = new (MeshCache as any)({
+      ...({} as any),
+      importFn,
+      store: rootStore.child('cache'),
+      pubsub,
+      logger,
+    } as any)
+
+const sources: MeshResolvedSource[] = [];
+const transforms: MeshTransform[] = [];
+const additionalEnvelopPlugins: MeshPlugin<any>[] = [];
+const betsTransforms = [];
+const additionalTypeDefs = [] as any[];
+const betsHandler = new MysqlHandler({
+              name: "bets",
+              config: {"host":"betsy.c9wzmnw9mmdm.eu-central-1.rds.amazonaws.com","port":3306,"user":"admin","password":"AizdhmakEPQxOts3XvCl","database":"main"},
+              baseDir,
+              cache,
+              pubsub,
+              store: sourcesStore.child("bets"),
+              logger: logger.child("bets"),
+              importFn,
+            });
+betsTransforms[0] = new FilterSchemaTransform({
+                  apiName: "bets",
+                  config: {"mode":"bare","filters":["users_InsertInput.!id","tasks_InsertInput.!id","bets_InsertInput.!id"]},
+                  baseDir,
+                  cache,
+                  pubsub,
+                  importFn,
+                  logger,
+                });
+sources[0] = {
+          name: 'bets',
+          handler: betsHandler,
+          transforms: betsTransforms
+        }
+const additionalResolvers = [] as any[]
+const merger = new(BareMerger as any)({
+        cache,
+        pubsub,
+        logger: logger.child('bareMerger'),
+        store: rootStore.child('bareMerger')
+      })
+
+  return {
+    sources,
+    transforms,
+    additionalTypeDefs,
+    additionalResolvers,
+    cache,
+    pubsub,
+    merger,
+    logger,
+    additionalEnvelopPlugins,
+    get documents() {
+      return [
+      
+    ];
+    },
+    fetchFn,
+  };
 }
 
 export function createBuiltMeshHTTPHandler<TServerContext = {}>(): MeshHTTPHandler<TServerContext> {
@@ -587,6 +712,7 @@ export function createBuiltMeshHTTPHandler<TServerContext = {}>(): MeshHTTPHandl
     rawServeConfig: undefined,
   })
 }
+
 
 let meshInstance$: Promise<MeshInstance> | undefined;
 

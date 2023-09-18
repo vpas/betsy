@@ -1,25 +1,15 @@
 import React from "react";
 import { useState } from 'react';
-import Logo from "../components/Logo"
-import Button from "../components/Button"
 import { 
-    gql, 
     useApolloClient,
     NetworkStatus,
 } from '@apollo/client';
-import "./Login.css";
 
-const GET_USER_BY_EMAIL = gql`
-    query GetUserByEmail($email: String = "") {
-        users(where: {email: $email}) {
-            email
-            id
-            username
-            tasks
-            bets
-        }
-    }
-`
+import Logo from "components/Logo"
+import Button from "components/Button"
+import {GET_USER_BY_EMAIL} from "GraphQLQueries";
+
+import "./Login.css";
 
 export const Login = ({setUser}) => {
     const client = useApolloClient();
@@ -28,11 +18,11 @@ export const Login = ({setUser}) => {
     const [error, setError] = useState('');
 
     async function onLogin() {
+        console.log("onLogin");
         const result = await client.query({
             query: GET_USER_BY_EMAIL,
-            variables: { email },
+            variables: { "email": email },
         });
-        console.log(result);
         
         if (result.networkStatus !== NetworkStatus.ready) {
             setError("Network error");
@@ -52,23 +42,24 @@ export const Login = ({setUser}) => {
         <div className="screen login">
             <Logo/>
             <form>
-                <label className="email-label">email</label>
+                <div className="login-text">LOGIN</div>
                 <input 
                     type="email" 
                     className="email"
                     value={email}
+                    placeholder="Email"
                     onChange={e => setEmail(e.target.value)}
                 />
-                <label className="password-label">password</label>
                 <input 
                     type="password" 
                     className="password"
                     value={password}
+                    placeholder="Password"
                     onChange={e => setPassword(e.target.value)}
                 />
                 <label className="error">{error}</label>
                 <Button 
-                    text="LOGIN" 
+                    text="LOG IN" 
                     className="login-button"
                     onClick={onLogin}
                 />

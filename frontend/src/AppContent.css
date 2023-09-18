@@ -1,0 +1,22 @@
+.App .content {
+    width: 375px;
+}
+
+.screen {
+    width: 375px;
+    text-align: center;
+    position: relative;
+}
+
+.section-title {
+    color: rgba(255, 255, 255, 0.2);
+    font-family: Poppins;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    text-transform: uppercase;
+    height: 16px;
+    left: 20px;
+    text-align: left;
+}

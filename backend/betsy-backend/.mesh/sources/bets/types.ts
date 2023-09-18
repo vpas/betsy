@@ -85,7 +85,9 @@ export type bets = {
   bet_condition: bets_bet_condition;
   term: Scalars['Time']['output'];
   bet_amount: Scalars['UnsignedInt']['output'];
+  task_id: Scalars['Int']['output'];
   bets?: Maybe<Array<Maybe<bets>>>;
+  tasks?: Maybe<Array<Maybe<tasks>>>;
   users?: Maybe<Array<Maybe<users>>>;
 };
 
@@ -95,6 +97,14 @@ export type betsbetsArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   where?: InputMaybe<bets_WhereInput>;
   orderBy?: InputMaybe<bets_OrderByInput>;
+};
+
+
+export type betstasksArgs = {
+  where?: InputMaybe<tasks_WhereInput>;
+  orderBy?: InputMaybe<tasks_OrderByInput>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
 };
 
 
@@ -117,6 +127,7 @@ export type bets_WhereInput = {
   bet_condition?: InputMaybe<Scalars['String']['input']>;
   term?: InputMaybe<Scalars['String']['input']>;
   bet_amount?: InputMaybe<Scalars['String']['input']>;
+  task_id?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type bets_OrderByInput = {
@@ -127,11 +138,46 @@ export type bets_OrderByInput = {
   bet_condition?: InputMaybe<OrderBy>;
   term?: InputMaybe<OrderBy>;
   bet_amount?: InputMaybe<OrderBy>;
+  task_id?: InputMaybe<OrderBy>;
 };
 
 export type OrderBy =
   | 'asc'
   | 'desc';
+
+export type tasks = {
+  id: Scalars['Int']['output'];
+  created_by: Scalars['Int']['output'];
+  title: Scalars['String']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  state: tasks_state;
+  started_at?: Maybe<Scalars['DateTime']['output']>;
+  bets?: Maybe<Array<Maybe<bets>>>;
+  users?: Maybe<Array<Maybe<users>>>;
+};
+
+
+export type tasksbetsArgs = {
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  where?: InputMaybe<bets_WhereInput>;
+  orderBy?: InputMaybe<bets_OrderByInput>;
+};
+
+
+export type tasksusersArgs = {
+  where?: InputMaybe<users_WhereInput>;
+  orderBy?: InputMaybe<users_OrderByInput>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type tasks_state =
+  | 'accept_bets'
+  | 'bets_finalized'
+  | 'in_progress'
+  | 'done'
+  | 'abandoned';
 
 export type users = {
   id: Scalars['Int']['output'];
@@ -157,43 +203,6 @@ export type userstasksArgs = {
   orderBy?: InputMaybe<tasks_OrderByInput>;
 };
 
-export type tasks = {
-  id: Scalars['Int']['output'];
-  created_by: Scalars['Int']['output'];
-  title: Scalars['String']['output'];
-  description?: Maybe<Scalars['String']['output']>;
-  state: tasks_state;
-  started_at?: Maybe<Scalars['DateTime']['output']>;
-  users?: Maybe<Array<Maybe<users>>>;
-};
-
-
-export type tasksusersArgs = {
-  where?: InputMaybe<users_WhereInput>;
-  orderBy?: InputMaybe<users_OrderByInput>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-};
-
-export type tasks_state =
-  | 'accept_bets'
-  | 'bets_finalized'
-  | 'in_progress'
-  | 'done'
-  | 'abandoned';
-
-export type users_WhereInput = {
-  id?: InputMaybe<Scalars['String']['input']>;
-  username?: InputMaybe<Scalars['String']['input']>;
-  email?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type users_OrderByInput = {
-  id?: InputMaybe<OrderBy>;
-  username?: InputMaybe<OrderBy>;
-  email?: InputMaybe<OrderBy>;
-};
-
 export type tasks_WhereInput = {
   id?: InputMaybe<Scalars['String']['input']>;
   created_by?: InputMaybe<Scalars['String']['input']>;
@@ -210,6 +219,18 @@ export type tasks_OrderByInput = {
   description?: InputMaybe<OrderBy>;
   state?: InputMaybe<OrderBy>;
   started_at?: InputMaybe<OrderBy>;
+};
+
+export type users_WhereInput = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  username?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type users_OrderByInput = {
+  id?: InputMaybe<OrderBy>;
+  username?: InputMaybe<OrderBy>;
+  email?: InputMaybe<OrderBy>;
 };
 
 export type Mutation = {
@@ -273,13 +294,13 @@ export type Mutationdelete_usersArgs = {
 };
 
 export type bets_InsertInput = {
-  id: Scalars['Int']['input'];
   created_by: Scalars['Int']['input'];
   accepted_by?: InputMaybe<Scalars['Int']['input']>;
   mirror_bet_id?: InputMaybe<Scalars['Int']['input']>;
   bet_condition: bets_bet_condition;
   term: Scalars['Time']['input'];
   bet_amount: Scalars['UnsignedInt']['input'];
+  task_id: Scalars['Int']['input'];
 };
 
 export type bets_UpdateInput = {
@@ -290,10 +311,10 @@ export type bets_UpdateInput = {
   bet_condition?: InputMaybe<bets_bet_condition>;
   term?: InputMaybe<Scalars['Time']['input']>;
   bet_amount?: InputMaybe<Scalars['UnsignedInt']['input']>;
+  task_id?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type tasks_InsertInput = {
-  id?: InputMaybe<Scalars['Int']['input']>;
   created_by: Scalars['Int']['input'];
   title: Scalars['String']['input'];
   description?: InputMaybe<Scalars['String']['input']>;

@@ -20,7 +20,9 @@ type bets {
   bet_condition: bets_bet_condition!
   term: Time!
   bet_amount: UnsignedInt!
+  task_id: Int!
   bets(limit: Int, offset: Int, where: bets_WhereInput, orderBy: bets_OrderByInput): [bets]
+  tasks(where: tasks_WhereInput, orderBy: tasks_OrderByInput, limit: Int, offset: Int): [tasks]
   users(where: users_WhereInput, orderBy: users_OrderByInput, limit: Int, offset: Int): [users]
 }
 
@@ -43,6 +45,7 @@ input bets_WhereInput {
   bet_condition: String
   term: String
   bet_amount: String
+  task_id: String
 }
 
 input bets_OrderByInput {
@@ -53,19 +56,12 @@ input bets_OrderByInput {
   bet_condition: OrderBy
   term: OrderBy
   bet_amount: OrderBy
+  task_id: OrderBy
 }
 
 enum OrderBy {
   asc
   desc
-}
-
-type users {
-  id: Int!
-  username: String!
-  email: String!
-  bets(limit: Int, offset: Int, where: bets_WhereInput, orderBy: bets_OrderByInput): [bets]
-  tasks(limit: Int, offset: Int, where: tasks_WhereInput, orderBy: tasks_OrderByInput): [tasks]
 }
 
 type tasks {
@@ -75,6 +71,7 @@ type tasks {
   description: String
   state: tasks_state!
   started_at: DateTime
+  bets(limit: Int, offset: Int, where: bets_WhereInput, orderBy: bets_OrderByInput): [bets]
   users(where: users_WhereInput, orderBy: users_OrderByInput, limit: Int, offset: Int): [users]
 }
 
@@ -89,16 +86,12 @@ enum tasks_state {
 "A date-time string at UTC, such as 2007-12-03T10:15:30Z, compliant with the `date-time` format outlined in section 5.6 of the RFC 3339 profile of the ISO 8601 standard for representation of dates and times using the Gregorian calendar."
 scalar DateTime
 
-input users_WhereInput {
-  id: String
-  username: String
-  email: String
-}
-
-input users_OrderByInput {
-  id: OrderBy
-  username: OrderBy
-  email: OrderBy
+type users {
+  id: Int!
+  username: String!
+  email: String!
+  bets(limit: Int, offset: Int, where: bets_WhereInput, orderBy: bets_OrderByInput): [bets]
+  tasks(limit: Int, offset: Int, where: tasks_WhereInput, orderBy: tasks_OrderByInput): [tasks]
 }
 
 input tasks_WhereInput {
@@ -119,6 +112,18 @@ input tasks_OrderByInput {
   started_at: OrderBy
 }
 
+input users_WhereInput {
+  id: String
+  username: String
+  email: String
+}
+
+input users_OrderByInput {
+  id: OrderBy
+  username: OrderBy
+  email: OrderBy
+}
+
 type Mutation {
   insert_bets(bets: bets_InsertInput!): bets
   update_bets(bets: bets_UpdateInput!, where: bets_WhereInput): bets
@@ -132,13 +137,13 @@ type Mutation {
 }
 
 input bets_InsertInput {
-  id: Int!
   created_by: Int!
   accepted_by: Int
   mirror_bet_id: Int
   bet_condition: bets_bet_condition!
   term: Time!
   bet_amount: UnsignedInt!
+  task_id: Int!
 }
 
 input bets_UpdateInput {
@@ -149,10 +154,10 @@ input bets_UpdateInput {
   bet_condition: bets_bet_condition
   term: Time
   bet_amount: UnsignedInt
+  task_id: Int
 }
 
 input tasks_InsertInput {
-  id: Int
   created_by: Int!
   title: String!
   description: String

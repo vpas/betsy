@@ -36,7 +36,9 @@ Resources:
         Sourcemap: true
         EntryPoints: 
           - app.ts
-        Packages: "external"
+        # External:
+        #   - "uWebSockets.js"
+        # Packages: "external"
   # ApplicationResourceGroup:
   #   Type: AWS::ResourceGroups::Group
   #   Properties:

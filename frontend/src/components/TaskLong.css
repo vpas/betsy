@@ -1,75 +1,106 @@
 .task-long {
-    border: 0px solid;
-    border-color: rgb(228, 231, 237);
     border-radius: 16px;
-    background-color: rgba(255, 255, 255, 0.031);
-    height: 200px;
+    background: rgba(255, 255, 255, 0.03);
+    height: 206px;
+    left: 0;
+    position: absolute;
+    top: 0;
     width: 335px;
 }
 
-.task-long .text-wrapper {
-    color: var(--color-grey-light);
-    font-family: "Roboto-Regular", Helvetica;
-    font-size: 16px;
-    font-weight: 400;
-    left: 19px;
-    letter-spacing: 0;
+.task-long .title {
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
     line-height: normal;
+    opacity: 0.9;
+    text-align: left;
+    
+    height: 24px;
     position: absolute;
-    top: 62px;
-    width: 295px;
+    left: 20px;
+    top: 16px;
+    width: 148px;
 }
 
-.task-long .amount-of-money {
-    color: var(--color-grey-medium);
-    font-family: "Roboto-SemiBold", Helvetica;
-    font-size: 32px;
-    font-weight: 600;
-    height: 24px;
-    left: 239px;
-    letter-spacing: 0;
+.task-long .description {
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
     line-height: normal;
+    text-align: left;
+    opacity: 0.9;
     position: absolute;
+    left: 20px;
+    top: 70px;
+    width: 295px;
+    height: 120px;
+    margin: 0;
+    resize: none;
+    background: none;
+    border: none;
+    pointer-events: none; 
+}
+
+.task-long .bet-amount {
+    color: #FFF;
     text-align: right;
-    top: 18px;
-    white-space: nowrap;
-    width: 41px;
+    font-family: Poppins;
+    font-size: 36px;
+    font-style: normal;
+    font-weight: 600;
+    text-wrap: nowrap;
+    line-height: normal;
+    
+    opacity: 0.9;
+    width: 60px;
+    height: 30px;
+    position: absolute;
+    left: 223px;
+    top: 4px;
+    margin: 0;
 }
 
 .task-long .icon-star {
     height: 32px;
-    left: 282px;
+    left: 287px;
     position: absolute;
-    top: 13px;
+    top: 15px;
     width: 32px;
 }
 
-.task-long .time-left {
-    color: var(--color-grey-light);
-    font-family: "Roboto-Regular", Helvetica;
-    font-size: 16px;
+.task-long .status {
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 14px;
+    font-style: normal;
     font-weight: 400;
-    height: 20px;
-    left: 19px;
-    letter-spacing: 0;
     line-height: normal;
+    text-align: left;
+    opacity: 0.4;
+    width: 200px;
+    height: 16px;
     position: absolute;
-    top: 34px;
-    width: 88px;
+    top: 48px;
+    left: 20px;
 }
 
-.task-long .name {
-    color: var(--color-grey-medium);
-    font-family: "Roboto-SemiBold", Helvetica;
-    font-size: 20px;
-    font-weight: 600;
-    height: 24px;
-    left: 19px;
-    letter-spacing: 0;
+.task-long .term {
+    color: #FFF;
+    font-family: Poppins;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
     line-height: normal;
+    text-align: right;
+    opacity: 0.4;
+    width: 200px;
+    height: 16px;
     position: absolute;
-    top: 8px;
-    white-space: nowrap;
-    width: 109px;
+    top: 48px;
+    right: 20px;
 }
-
