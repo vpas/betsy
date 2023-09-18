@@ -1,13 +1,13 @@
-.section-title.your-task {
-    position: absolute;
-    top: 146px;
-}
-
 .home .user-info {
     position: absolute;
     top: 110px;
     left: 50%;
     transform: translateX(-50%);
+}
+
+.home .section-title.your-task {
+    position: absolute;
+    top: 146px;
 }
 
 .home .task-block-wrapper {
@@ -17,7 +17,7 @@
     width: 100%;
 }
 
-.section-title.your-bets {
+.home .section-title.your-bets {
     position: absolute;
     top: 414px;
 }

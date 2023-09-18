@@ -7,6 +7,7 @@ export const Slider = ({
     min, max, 
     label, 
     className, 
+    disabled = false,
     onFormatValue = v => v
 }) => {
     return (
@@ -19,6 +20,7 @@ export const Slider = ({
                 min={min} 
                 max={max} 
                 value={value}
+                disabled={disabled}
                 onChange={onChange}
             />
         </div>

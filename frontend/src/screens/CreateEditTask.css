@@ -78,16 +78,41 @@
     transform: translate(-120%, 0);
 }
 
-.task-editor .delete-button {
+.task-editor .lock-bets-button {
     position: absolute;
     top: 680px;
     left: 50%;
     transform: translate(20%, 0);
+    background-color: #F0A25A;
+}
+
+.task-editor .start-button {
+    position: absolute;
+    top: 680px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background-color: #5EDD91;
+}
+
+.task-editor .finished-button {
+    position: absolute;
+    top: 680px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background-color: #5EDD91;
+}
+
+.task-editor .delete-button {
+    position: absolute;
+    top: 747px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    background-color: #DD665E;
 }
 
 .task-editor .footer {
     position: absolute;
     width: 100%;
     height: 1px;
-    top: 760px;
+    top: 827px;
 }

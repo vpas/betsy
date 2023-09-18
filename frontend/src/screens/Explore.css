@@ -1,0 +1,11 @@
+.explore .tasks-accepting-bets {
+    position: absolute;
+    top: 146px;
+}
+
+.explore .list-wrapper {
+    position: absolute;
+    top: 174px;
+    width: 335px;
+    left: 20px
+}

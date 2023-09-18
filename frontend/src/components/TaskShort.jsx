@@ -9,10 +9,12 @@ import "./TaskShort.css";
 
 export const TaskShort = ({task}) => {
     const context = useContext(AppContext);
-    const bet = task.bets.find(b => b.created_by === context.userId);
+    const ourBet = task.bets.find(b => b.created_by === context.userId);
     const isOurs = task.created_by === context.userId;
     const hasBonus = isOurs && task.state === TASK_STATES.DONE;
     
+    const bet = ourBet ? ourBet : task.owner_bet;
+
     function onClick() {
 
     }
@@ -22,6 +24,12 @@ export const TaskShort = ({task}) => {
             <div className="title">{task.title}</div>
             <div className="status">{TASK_STATE_MESSAGES[task.state]}</div>
             <div className="final-payout">{bet.final_payout}</div>
+            <div 
+                className="owner"
+                style={{ visibility: task.owner.id !== context.userId ? "visible" : "hidden" }}
+            >
+                {task.owner.username}
+            </div>
             <img className="icon-star" alt="Icon star" src={star_svg} />
             <div 
                 className="completion-bonus" 

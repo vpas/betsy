@@ -52,7 +52,10 @@ export const AppContent = () => {
         const tasksById = {};
         tasks.forEach(t => tasksById[t.id] = t);
 
-        tasks.forEach(t => t.bets = []);
+        tasks.forEach(t => {
+            t.bets = [];
+            t.owner = usersById[t.created_by];
+        });
         bets.forEach(b => {
             const t = tasksById[b.task_id];
             t.bets.push(b);
@@ -67,7 +70,6 @@ export const AppContent = () => {
     }
 
     async function refetch() {
-        console.log("refetch");
         context.updateContext(c => { 
             c.tasks = null;
             c.shouldRefetch = false; 

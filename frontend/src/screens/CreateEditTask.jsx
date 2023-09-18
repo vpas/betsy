@@ -99,6 +99,50 @@ export const CreateEditTask = () => {
         onSave({state: TASK_STATES.ABANDONED});
     }
 
+    function onLockBets() {
+        onSave({state: TASK_STATES.BETS_FINALIZED});
+    }
+
+    function onStart() {
+        onSave({state: TASK_STATES.IN_PROGRESS});
+    }
+
+    function onFinished() {
+        onSave({state: TASK_STATES.DONE});
+    }
+
+    function Buttons() {
+        if (areCreating) {
+            return (
+                <Button text="CREATE" className="create-button" onClick={() => onCreate()}/>
+            )
+        } else if (task.state === TASK_STATES.ACCEPT_BETS) {
+            return (
+                <>
+                    <Button text="SAVE" className="save-button"onClick={() => onSave()}/>
+                    <Button text="LOCK" className="lock-bets-button" onClick={() => onLockBets()}/>
+                    <Button text="DELETE" className="delete-button" onClick={() => onDelete()}/>
+                </>
+            )
+        } else if (task.state === TASK_STATES.BETS_FINALIZED) {
+            return (
+                <>
+                    <Button text="START" className="start-button" onClick={() => onStart()}/>
+                    <Button text="DELETE" className="delete-button" onClick={() => onDelete()}/>
+                </>
+            )
+        } else if (task.state === TASK_STATES.IN_PROGRESS) {
+            return (
+                <>
+                    <Button text="FINISHED" className="finished-button" onClick={() => onFinished()}/>
+                    <Button text="DELETE" className="delete-button" onClick={() => onDelete()}/>
+                </>
+            )
+        }
+    }
+
+    const canEdit = task.state === TASK_STATES.ACCEPT_BETS;
+
     const isLoading = createTaskResult.loading || createBetResult.loading || updateTaskAndBetResult.loading;
     let error = createTaskResult.error || createBetResult.error || updateTaskAndBetResult.error;
     if (!error) {
@@ -124,6 +168,7 @@ export const CreateEditTask = () => {
                         type="text"
                         placeholder="Title"
                         value={task.title}
+                        disabled={!canEdit}
                         onChange={e => updateTask(t => { t.title = e.target.value; })}
                     />
                 </div>
@@ -133,6 +178,7 @@ export const CreateEditTask = () => {
                         id="description"
                         placeholder="Description"
                         value={task.description}
+                        disabled={!canEdit}
                         onChange={e => updateTask(t => { t.description = e.target.value; })}
                     />
                 </div>
@@ -142,6 +188,7 @@ export const CreateEditTask = () => {
                     min="0" 
                     max="72" 
                     value={task.owner_bet.term_hours} 
+                    disabled={!canEdit}
                     onChange={e => updateTask(t => { t.owner_bet.term_hours = parseInt(e.target.value); })}
                     onFormatValue={hoursToDaysAndHours}
                 />
@@ -150,28 +197,12 @@ export const CreateEditTask = () => {
                     label="STARS"
                     min="1" 
                     max="100" 
+                    disabled={!canEdit}
                     value={task.owner_bet.bet_amount} 
                     onChange={e => updateTask(t => { t.owner_bet.bet_amount = parseInt(e.target.value); })}
                 />
                 <label className="error">{error.message}</label>
-                <Button 
-                    text="CREATE" 
-                    className="create-button"
-                    onClick={() => onCreate()}
-                    style={{ visibility: areCreating ? "visible" : "hidden" }}
-                />
-                <Button 
-                    text="SAVE" 
-                    className="save-button"
-                    onClick={() => onSave()}
-                    style={{ visibility: areCreating ? "hidden" : "visible" }}
-                />
-                <Button 
-                    text="DELETE" 
-                    className="delete-button"
-                    onClick={() => onDelete()}
-                    style={{ visibility: areCreating ? "hidden" : "visible" }}
-                />
+                <Buttons />
                 <div className="footer"/>
             </div>
         )

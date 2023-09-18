@@ -150,8 +150,6 @@ export const CREATE_BET = gql`
         $bet_condition: String, 
         $created_by: Int, 
         $task_id: Int, 
-        $mirror_bet_id: Int = null, 
-        $accepted_by: Int = null, 
         $term_hours: Int,
     ) {
         insert_bets_one(
@@ -160,8 +158,6 @@ export const CREATE_BET = gql`
                 bet_condition: $bet_condition, 
                 created_by: $created_by, 
                 task_id: $task_id, 
-                mirror_bet_id: $mirror_bet_id, 
-                accepted_by: $accepted_by, 
                 term_hours: $term_hours,
             }
         ) {
@@ -189,5 +185,33 @@ export const UPDATE_TASK_AND_BET = gql`
     }
 
 `
-  
-  
+
+export const UPDATE_TASK = gql`
+    mutation UpdateTask(
+        $id: Int,
+        $description: String, 
+        $title: String, 
+        $state: String,
+    ) {
+        update_tasks_by_pk(pk_columns: {id: $id}, _set: {title: $title, description: $description, state: $state}) {
+            id
+        }
+    }
+
+`
+
+export const UPDATE_BET = gql`
+    mutation UpdateBet(
+        $id: Int, 
+        $term_hours: Int, 
+        $bet_amount: Int,
+        $state: String,
+        $win_payout: Int,
+        $final_payout: Int,
+    ) {
+        update_bets_by_pk(pk_columns: {id: $id}, _set: {bet_amount: $bet_amount, final_payout: $final_payout, term_hours: $term_hours, win_payout: $win_payout}) {
+            id
+        }
+    }
+
+`
