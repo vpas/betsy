@@ -24,6 +24,18 @@ export const GET_USER_BY_ID = gql`
 
 `
 
+export const GET_USERS = gql`
+    query GetUsers {
+        users {
+            email
+            id
+            username
+            stars
+        }
+    }
+
+`
+
 export const GET_USER_TASKS = gql`
     query GetUserTasks($user_id: Int) {
         tasks(where: {created_by: {_eq: $user_id}}, order_by: {updated_at: desc}) {
@@ -39,19 +51,49 @@ export const GET_USER_TASKS = gql`
     }
 `
 
+export const GET_TASKS = gql`
+    query GetTasks {
+        tasks(order_by: {updated_at: desc}) {
+            created_by
+            description
+            id
+            started_at
+            state
+            title
+            created_at
+            updated_at
+        }
+    }
+`
+
 export const GET_USER_BETS = gql`
     query GetUserBets($user_id: Int) {
         bets(where: {created_by: {_eq: $user_id}}, order_by: {updated_at: desc}) {
-            accepted_by
             bet_amount
             bet_condition
             created_by
             id
-            mirror_bet_id
             task_id
             term_hours
             created_at
             updated_at
+        }
+    }
+`
+
+export const GET_BETS = gql`
+    query GetBets {
+        bets(order_by: {updated_at: desc}) {
+            bet_amount
+            bet_condition
+            created_by
+            id
+            task_id
+            term_hours
+            created_at
+            updated_at
+            win_payout
+            final_payout
         }
     }
 `

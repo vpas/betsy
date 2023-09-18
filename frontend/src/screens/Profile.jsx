@@ -44,7 +44,7 @@ export const Profile = () => {
                 <UserInfo className="user-info"/>
                 <label className="email">{user.email}</label>
                 <Button 
-                    text="LOGOUT" 
+                    text="LOG OUT" 
                     className="logout-button"
                     onClick={onLogout}
                 />

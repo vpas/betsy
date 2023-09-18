@@ -16,8 +16,6 @@ import {
     CREATE_TASK,
     CREATE_BET,
     UPDATE_TASK_AND_BET,
-    GET_USER_TASKS,
-    GET_USER_BETS,
 } from "GraphQLQueries";
 import {hoursToDaysAndHours} from "Utils"
 
@@ -26,59 +24,30 @@ import { TASK_STATES } from "Consts";
 
 export const CreateEditTask = () => {
     const context = useContext(AppContext);
-    let taskProp = context.taskProp;
-    let yourBetProp = context.yourBetProp;
-
+    let taskToEdit = context.taskToEdit;
+    
     let areCreating = true;
-    if (!taskProp) {
+    if (!taskToEdit) {
         // creating task
         areCreating = true;
-        taskProp = {
+        taskToEdit = {
             created_by: context.userId,
             title: "",
             desciption: "",
             state: "accept_bets", 
+            owner_bet: {
+                created_by: context.userId,
+                bet_condition: "done_in_time",
+                bet_amount: 1,
+                term_hours: 1,
+            },
         };
-        yourBetProp = {
-            created_by: context.userId,
-            bet_condition: "done_in_time",
-            bet_amount: 1,
-            term_hours: 1,
-        }
     } else {
         areCreating = false;
         // editing task
     }
-    const [ task, updateTask ] = useImmer(taskProp);
-    const [ yourBet, updateYourBet ] = useImmer(yourBetProp);
+    const [ task, updateTask ] = useImmer(taskToEdit);
 
-    // function cacheUpdateTask(cache) {
-    //     cache.modify({
-    //         id: cache.identify(task),
-    //         fields: {
-    //             title() { return task.title },
-    //             description() { return task.description },
-    //             state() { return task.state },
-    //         },
-    //         broadcast: false,
-    //     })
-    // }
-    // function cacheUpdateBet(cache) {
-    //     cache.modify({
-    //         id: cache.identify(yourBet),
-    //         fields: {
-    //             term_hours() { return yourBet.term_hours },
-    //             bet_amount() { return yourBet.bet_amount },
-    //         },
-    //         broadcast: false,
-    //     })
-    // }
-    // const mutationOptions = {
-    //     update(cache, result) {
-    //         cacheUpdateTask(cache);
-    //         cacheUpdateBet(cache);
-    //     },
-    // };
     const [createTask, createTaskResult] = useMutation(CREATE_TASK);
     const [createBet, createBetResult] = useMutation(CREATE_BET);
     const [updateTaskAndBet, updateTaskAndBetResult] = useMutation(UPDATE_TASK_AND_BET);
@@ -86,20 +55,21 @@ export const CreateEditTask = () => {
     function onBackButton({shouldRefetch = false}) {
         context.updateContext(c => { 
             c.activeScreenId = Home.name; 
-            c.taskProp = null;
-            c.yourBetProp = null;
+            c.taskToEdit = null;
             c.shouldRefetch = shouldRefetch;
         });
     }
 
     function onCreate() {
+        const taskVars = {...task};
+        delete taskVars.owner_bet;
         createTask({
-            variables: task,
+            variables: taskVars,
             onCompleted: data => {
                 const task_id = data.insert_tasks_one.id;
                 createBet({
                     variables: {
-                        ...yourBet,
+                        ...task.owner_bet,
                         task_id: task_id,
                     },
                     onCompleted: () => { onBackButton({shouldRefetch: true}) },
@@ -116,9 +86,9 @@ export const CreateEditTask = () => {
                 title: task.title, 
                 state: task.state,
                 
-                bet_id: yourBet.id, 
-                term_hours: yourBet.term_hours, 
-                bet_amount: yourBet.bet_amount,
+                bet_id: task.owner_bet.id, 
+                term_hours: task.owner_bet.term_hours, 
+                bet_amount: task.owner_bet.bet_amount,
                 ...overrides
             },
             onCompleted: () => { onBackButton({shouldRefetch: true}) },
@@ -171,8 +141,8 @@ export const CreateEditTask = () => {
                     label="HOURS"
                     min="0" 
                     max="72" 
-                    value={yourBet.term_hours} 
-                    onChange={e => updateYourBet(b => { b.term_hours = parseInt(e.target.value); })}
+                    value={task.owner_bet.term_hours} 
+                    onChange={e => updateTask(t => { t.owner_bet.term_hours = parseInt(e.target.value); })}
                     onFormatValue={hoursToDaysAndHours}
                 />
                 <Slider 
@@ -180,8 +150,8 @@ export const CreateEditTask = () => {
                     label="STARS"
                     min="1" 
                     max="100" 
-                    value={yourBet.bet_amount} 
-                    onChange={e => updateYourBet(b => { b.bet_amount = parseInt(e.target.value); })}
+                    value={task.owner_bet.bet_amount} 
+                    onChange={e => updateTask(t => { t.owner_bet.bet_amount = parseInt(e.target.value); })}
                 />
                 <label className="error">{error.message}</label>
                 <Button 

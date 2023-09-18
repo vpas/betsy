@@ -18,8 +18,7 @@ export const CreateTaskButton = () => {
                 className="icon-plus"
                 onClick={() => context.updateContext(c => { 
                     c.activeScreenId = CreateEditTask.name; 
-                    c.taskProp = null;
-                    c.yourBetProp = null;
+                    c.taskToEdit = null;
                 })}
             />
         </div>

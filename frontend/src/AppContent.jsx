@@ -1,9 +1,7 @@
 import { StrictMode, useContext, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import { Scrollbar } from 'react-scrollbars-custom';
-
-import AppContext from 'AppContext';
-import Menu from 'components/menu/Menu';
+import { useQuery } from "@apollo/client";
 
 import Login from 'screens/Login';
 import Bets from 'screens/Bets';
@@ -13,6 +11,12 @@ import Explore from 'screens/Explore';
 import History from 'screens/History';
 import Home from 'screens/Home';
 import Profile from 'screens/Profile';
+import Menu from 'components/menu/Menu';
+import LoadingBlock from "components/LoadingBlock"
+import ErrorBlock from "components/ErrorBlock"
+import AppContext from "AppContext";
+import {GET_BETS, GET_USERS, GET_TASKS} from "GraphQLQueries";
+import {joinQueries} from "Utils";
 
 import './AppContent.css';
 
@@ -30,9 +34,58 @@ export const AppContent = () => {
     const context = useContext(AppContext);
     const [cookies, setCookie] = useCookies(['user_id']);
 
+    const usersQuery = useQuery(GET_USERS);
+    const tasksQuery = useQuery(GET_TASKS);
+    const betsQuery = useQuery(GET_BETS);
+    const {loading, error} = joinQueries(usersQuery, tasksQuery, betsQuery);
+
+    function setContextTasks() {
+        const users = usersQuery.data.users;
+        const tasks = tasksQuery.data.tasks.map(
+            t => { return {...t} }
+        );
+        const bets = betsQuery.data.bets;
+        
+        const usersById = {};
+        users.forEach(u => usersById[u.id] = u);
+
+        const tasksById = {};
+        tasks.forEach(t => tasksById[t.id] = t);
+
+        tasks.forEach(t => t.bets = []);
+        bets.forEach(b => {
+            const t = tasksById[b.task_id];
+            t.bets.push(b);
+            if (t.created_by === b.created_by) {
+                t.owner_bet = b;
+            }
+        });
+        context.updateContext(c => { 
+            c.tasks = tasks; 
+            c.user = usersById[c.userId];
+        });
+    }
+
+    async function refetch() {
+        console.log("refetch");
+        context.updateContext(c => { 
+            c.tasks = null;
+            c.shouldRefetch = false; 
+            c.refetching = true;
+        });
+        await Promise.all([usersQuery.refetch(), tasksQuery.refetch(), betsQuery.refetch()]);
+        context.updateContext(c => { 
+            c.refetching = false;
+        });
+    }
+
     useEffect(() => {
         if (context.userId === null && cookies.user_id) {
             context.updateContext(c => { c.userId = cookies.user_id; });
+        } else if (context.shouldRefetch) {
+            refetch();
+        } else if (!context.tasks && !loading && !error && !context.refetching) {
+            setContextTasks();
         }
     });
     
@@ -55,6 +108,16 @@ export const AppContent = () => {
 
     const ActiveScreen = getActiveScreen();
 
+    function ScreenContent() {
+        if (error) {
+            return <ErrorBlock message={error.message}/>
+        } else if (loading || context.shouldRefetch || !context.tasks) {
+            return <LoadingBlock/>
+        } else {
+            return <ActiveScreen />
+        }
+    }
+
     if (context.userId === null) {
         if (cookies.user_id) {
             return <></>
@@ -74,7 +137,7 @@ export const AppContent = () => {
                         noScrollX="true"
                     >
                         <StrictMode>
-                            <ActiveScreen />
+                            <ScreenContent />
                         </StrictMode>
                     </Scrollbar>
                 </div>
