@@ -19,3 +19,19 @@ export const TASK_STATES_ACTIVE = new Set([
     TASK_STATES.BETS_FINALIZED,
     TASK_STATES.IN_PROGRESS,
 ]);
+
+export const BET_CONDITION = {
+    DONE_IN_TIME: 'done_in_time',
+    NOT_DONE_IN_TIME: 'not_done_in_time',
+}
+
+export const ACTIONS = {
+    EDIT: 'edit',
+    VIEW: 'view',
+}
+
+export const USER_COLORS = [
+    "white",
+    "#F0A25A",
+    "red",
+]

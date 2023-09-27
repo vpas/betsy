@@ -5,6 +5,7 @@ import {
 
 import Logo from "components/Logo"
 import TasksList from "components/TasksList";
+import RefreshButton from "components/RefreshButton";
 import AppContext from "AppContext";
 import { TASK_STATES_ACTIVE } from "Consts";
 
@@ -23,6 +24,7 @@ export const Bets = () => {
     return (
         <div className="screen bets">
             <Logo />
+            <RefreshButton />
             <div className="section-title your-bets">YOUR BETS</div>
             <div className="list-wrapper">
                 <TasksList tasks={tasksWithOurBets} />

@@ -6,6 +6,7 @@ import {
 
 import Logo from "components/Logo"
 import TasksList from "components/TasksList";
+import RefreshButton from "components/RefreshButton";
 import AppContext from "AppContext";
 import { TASK_STATES_ACTIVE } from "Consts";
 
@@ -42,6 +43,7 @@ export const History = () => {
     return (
         <div className="screen history">
             <Logo />
+            <RefreshButton />
             <div
                 className={"tab tasks " + (tab === TABS.TASKS ? "active" : "")}
                 onClick={() => setTab(TABS.TASKS)}

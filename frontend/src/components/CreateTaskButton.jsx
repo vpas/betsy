@@ -17,6 +17,7 @@ export const CreateTaskButton = () => {
             <IconPlus 
                 className="icon-plus"
                 onClick={() => context.updateContext(c => { 
+                    c.prevScreenId = c.activeScreenId;
                     c.activeScreenId = CreateEditTask.name; 
                     c.taskToEdit = null;
                 })}

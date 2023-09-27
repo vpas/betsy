@@ -21,3 +21,10 @@
     position: absolute;
     top: 414px;
 }
+
+.home .your-bets-list {
+    position: absolute;
+    top: 442px;
+    width: 335px;
+    left: 20px
+}

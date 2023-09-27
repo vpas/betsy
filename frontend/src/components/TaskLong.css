@@ -47,30 +47,12 @@
 }
 
 .task-long .bet-amount {
-    color: #FFF;
-    text-align: right;
-    font-family: Poppins;
-    font-size: 36px;
-    font-style: normal;
-    font-weight: 600;
-    text-wrap: nowrap;
-    line-height: normal;
-    
-    opacity: 0.9;
     width: 60px;
     height: 30px;
     position: absolute;
-    left: 223px;
-    top: 4px;
+    right: 20px;
+    top: 0px;
     margin: 0;
-}
-
-.task-long .icon-star {
-    height: 32px;
-    left: 287px;
-    position: absolute;
-    top: 15px;
-    width: 32px;
 }
 
 .task-long .status {
@@ -103,4 +85,18 @@
     position: absolute;
     top: 48px;
     right: 20px;
+}
+
+.task-long .win-payout-block {
+    position: absolute;
+    top: 60px;
+    right: 20px;
+}
+
+/* .win-payout-block .win-payout-text{
+
+} */
+
+.win-payout-block .win-payout{
+    scale: 0.7;
 }

@@ -9,7 +9,7 @@ Globals:
   Api:
     TracingEnabled: true
 Resources:
-  BetsyMeshAPIWrapperFunction:
+  BetsyAPI:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: betsy-backend/
@@ -18,50 +18,12 @@ Resources:
       Architectures:
       - x86_64
       Events:
-        GraphQLAPI:
+        API:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
-            Path: /graphql
+            Path: /api
             Method: get
-        GraphQLAPIPost:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /graphql
-            Method: post
+        
     Metadata: # Manage esbuild properties
-      BuildMethod: esbuild
       BuildProperties:
-        Minify: false
-        Target: "es2020"
-        Sourcemap: true
-        EntryPoints: 
-          - app.ts
-        # External:
-        #   - "uWebSockets.js"
-        # Packages: "external"
-  # ApplicationResourceGroup:
-  #   Type: AWS::ResourceGroups::Group
-  #   Properties:
-  #     Name:
-  #       Fn::Sub: ApplicationInsights-SAM-${AWS::StackName}
-  #     ResourceQuery:
-  #       Type: CLOUDFORMATION_STACK_1_0
-  # ApplicationInsightsMonitoring:
-  #   Type: AWS::ApplicationInsights::Application
-  #   Properties:
-  #     ResourceGroupName:
-  #       Ref: ApplicationResourceGroup
-  #     AutoConfigurationEnabled: 'true'
-# Outputs:
-#   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-#   # Find out more about other implicit resources you can reference within SAM
-#   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-#   HelloWorldApi:
-#     Description: API Gateway endpoint URL for Prod stage for Hello World function
-#     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-#   HelloWorldFunction:
-#     Description: Hello World Lambda Function ARN
-#     Value: !GetAtt HelloWorldFunction.Arn
-#   HelloWorldFunctionIamRole:
-#     Description: Implicit IAM Role created for Hello World function
-#     Value: !GetAtt HelloWorldFunctionRole.Arn
+        UseNpmCi: True

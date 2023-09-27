@@ -5,7 +5,6 @@ import { useQuery } from "@apollo/client";
 
 import Login from 'screens/Login';
 import Bets from 'screens/Bets';
-import CreateEditBet from 'screens/CreateEditBet';
 import CreateEditTask from 'screens/CreateEditTask';
 import Explore from 'screens/Explore';
 import History from 'screens/History';
@@ -16,13 +15,12 @@ import LoadingBlock from "components/LoadingBlock"
 import ErrorBlock from "components/ErrorBlock"
 import AppContext from "AppContext";
 import {GET_BETS, GET_USERS, GET_TASKS} from "GraphQLQueries";
-import {joinQueries} from "Utils";
+import {calcWinPayouts, joinQueries} from "Utils";
 
 import './AppContent.css';
 
 const ALL_SCREENS = [
     Bets,
-    CreateEditBet,
     CreateEditTask,
     Explore,
     History,
@@ -44,7 +42,9 @@ export const AppContent = () => {
         const tasks = tasksQuery.data.tasks.map(
             t => { return {...t} }
         );
-        const bets = betsQuery.data.bets;
+        const bets = betsQuery.data.bets.map(
+            b => { return {...b} }
+        );
         
         const usersById = {};
         users.forEach(u => usersById[u.id] = u);
@@ -57,12 +57,14 @@ export const AppContent = () => {
             t.owner = usersById[t.created_by];
         });
         bets.forEach(b => {
+            b.owner = usersById[b.created_by];
             const t = tasksById[b.task_id];
             t.bets.push(b);
             if (t.created_by === b.created_by) {
                 t.owner_bet = b;
             }
         });
+        tasks.forEach(t => calcWinPayouts(t));
         context.updateContext(c => { 
             c.tasks = tasks; 
             c.user = usersById[c.userId];

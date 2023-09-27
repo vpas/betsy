@@ -92,7 +92,6 @@ export const GET_BETS = gql`
             term_hours
             created_at
             updated_at
-            win_payout
             final_payout
         }
     }
@@ -188,7 +187,7 @@ export const UPDATE_TASK_AND_BET = gql`
 
 export const UPDATE_TASK = gql`
     mutation UpdateTask(
-        $id: Int,
+        $id: Int!,
         $description: String, 
         $title: String, 
         $state: String,
@@ -202,14 +201,36 @@ export const UPDATE_TASK = gql`
 
 export const UPDATE_BET = gql`
     mutation UpdateBet(
-        $id: Int, 
+        $id: Int!, 
         $term_hours: Int, 
         $bet_amount: Int,
-        $state: String,
-        $win_payout: Int,
+    ) {
+        update_bets_by_pk(pk_columns: {id: $id}, _set: {bet_amount: $bet_amount, term_hours: $term_hours}) {
+            id
+        }
+    }
+
+`
+
+export const UPDATE_BET_PAYOUT = gql`
+    mutation UpdateBetPayout(
+        $id: Int!, 
         $final_payout: Int,
     ) {
-        update_bets_by_pk(pk_columns: {id: $id}, _set: {bet_amount: $bet_amount, final_payout: $final_payout, term_hours: $term_hours, win_payout: $win_payout}) {
+        update_bets_by_pk(pk_columns: {id: $id}, _set: {fianl_payout: $fianl_payout}) {
+            id
+        }
+    }
+
+`
+
+export const UPDATE_USER = gql`
+    mutation UpdateUser(
+        $id: Int, 
+        $stars: Int,
+        $username: String,
+    ) {
+        update_users_by_pk(pk_columns: {id: $id}, _set: {stars: $stars, username: $username}) {
             id
         }
     }

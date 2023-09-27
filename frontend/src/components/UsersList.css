@@ -1,0 +1,28 @@
+.users-list {
+    left: 20px;
+    display: flex;
+    flex-direction: row;
+}
+
+.users-list .user-card {
+    position: relative;
+    width: 120px;
+    height: 24px;
+}
+
+.user-card .username {
+    position: absolute;
+    left: 24px;
+    width: 100px;
+    color: white;
+    opacity: 0.9;
+    text-align: left;
+}
+
+.user-card .color {
+    position: absolute;
+    top: 4px;
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+}

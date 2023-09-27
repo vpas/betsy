@@ -1,5 +1,8 @@
 .user-info {
+    height: 32px;
     width: 250px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .user-info .username {
@@ -17,24 +20,10 @@
     text-align: left;
 }
 
-.user-info .stars {
+.user-info .balance {
     position: absolute;
     top: 0px;
-    right: 28px;
+    right: 20px;
 
-    color: #FFF;
-    font-family: Poppins;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    opacity: 0.9;
-    text-align: right;
-}
-
-.user-info .icon-star {
-    position: absolute;
-    top: 0px;
-    right: 0px;
     scale: 0.5;
 }

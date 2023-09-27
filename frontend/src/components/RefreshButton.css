@@ -1,0 +1,9 @@
+.refresh-button {
+    height: 24px;
+    width: 24px;
+    position: absolute;
+    right: 20px;
+    top: 64px;
+    fill: white;
+    opacity: 0.9;
+}

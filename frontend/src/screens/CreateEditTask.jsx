@@ -10,157 +10,267 @@ import BackButton from "components/BackButton";
 import Button from "components/Button";
 import LoadingBlock from "components/LoadingBlock";
 import Slider from "components/Slider";
-import Home from "screens/Home";
+import Stars from "components/Stars";
 import AppContext from "AppContext";
 import {
     CREATE_TASK,
     CREATE_BET,
-    UPDATE_TASK_AND_BET,
+    UPDATE_TASK,
+    UPDATE_BET,
+    UPDATE_USER,
 } from "GraphQLQueries";
-import {hoursToDaysAndHours} from "Utils"
+import { hoursToDaysAndHours, newTask, newBet, joinQueries, calcWinPayouts, calcWinPayout } from "Utils"
+import { TASK_STATES, USER_COLORS } from "Consts";
 
 import "./CreateEditTask.css";
-import { TASK_STATES } from "Consts";
+import UsersList from "components/UsersList";
 
 export const CreateEditTask = () => {
     const context = useContext(AppContext);
-    let taskToEdit = context.taskToEdit;
+    let inputTask = context.inputTask;
+    let inputBet = context.inputBet;
     
-    let areCreating = true;
-    if (!taskToEdit) {
+    let areCreatingTask = true;
+    if (!inputTask) {
         // creating task
-        areCreating = true;
-        taskToEdit = {
-            created_by: context.userId,
-            title: "",
-            desciption: "",
-            state: "accept_bets", 
-            owner_bet: {
-                created_by: context.userId,
-                bet_condition: "done_in_time",
-                bet_amount: 1,
-                term_hours: 1,
-            },
-        };
+        areCreatingTask = true;
+        inputTask = newTask({user: context.user});
     } else {
-        areCreating = false;
         // editing task
+        areCreatingTask = false;
+        inputTask = {...inputTask}
+        inputTask.bets = [...inputTask.bets]
     }
-    const [ task, updateTask ] = useImmer(taskToEdit);
 
-    const [createTask, createTaskResult] = useMutation(CREATE_TASK);
-    const [createBet, createBetResult] = useMutation(CREATE_BET);
-    const [updateTaskAndBet, updateTaskAndBetResult] = useMutation(UPDATE_TASK_AND_BET);
+    let areCreatingBet = true;
+    if (!inputBet) {
+        // creating bet
+        areCreatingBet = true;
+        inputBet = newBet({
+            user: context.user,
+            task: inputTask,
+        });
+    } else {
+        // editing bet
+        areCreatingBet = false;
+    }
+
+    const [ task, updateTask ] = useImmer(inputTask);
+    const [ bet, updateBet ] = useImmer(inputBet);
+    
+    const [createTaskMut, createTaskResult] = useMutation(CREATE_TASK);
+    const [createBetMut, createBetResult] = useMutation(CREATE_BET);
+    const [updateTaskMut, updateTaskResult] = useMutation(UPDATE_TASK);
+    const [updateBetMut, updateBetResult] = useMutation(UPDATE_BET);
+    const [updateUserMut, updateUserResult] = useMutation(UPDATE_USER);
     
     function onBackButton({shouldRefetch = false}) {
-        context.updateContext(c => { 
-            c.activeScreenId = Home.name; 
-            c.taskToEdit = null;
+        context.updateContext(c => {
+            c.activeScreenId = c.prevScreenId; 
+            c.prevScreenId = null;
+            c.inputTask = null;
+            c.inputBet = null;
             c.shouldRefetch = shouldRefetch;
         });
     }
 
-    function onCreate() {
+    async function createTask() {
         const taskVars = {...task};
         delete taskVars.owner_bet;
-        createTask({
-            variables: taskVars,
-            onCompleted: data => {
-                const task_id = data.insert_tasks_one.id;
-                createBet({
-                    variables: {
-                        ...task.owner_bet,
-                        task_id: task_id,
-                    },
-                    onCompleted: () => { onBackButton({shouldRefetch: true}) },
-                })
-            }
+        delete taskVars.bets;
+        const data = await createTaskMut({ variables: taskVars });
+        console.log(data);
+        const task_id = data.data.insert_tasks_one.id;
+        return task_id;
+    }
+
+    async function createBet({task_id}) {
+        const betVars = {...bet};
+        delete betVars.win_payout;
+        betVars.task_id = task_id;
+        const data = await createBetMut({ variables: betVars });
+    }
+
+    async function onCreateTaskAndBet() {
+        const task_id = await createTask();
+        await createBet({task_id: task_id});
+        onBackButton({shouldRefetch: true})
+    }
+
+    async function onCreateBet() {
+        await createBet({task_id: task.id});
+        onBackButton({shouldRefetch: true});
+    }
+
+    async function saveTask() {
+        await updateTaskMut({
+            variables: {
+                id: task.id, 
+                description: task.description, 
+                title: task.title,
+                state: task.state,
+            },
         });
     }
 
-    function onSave(overrides = {}) {
-        updateTaskAndBet({
+    async function saveBet() {
+        await updateBetMut({
             variables: {
-                task_id: task.id, 
-                description: task.description, 
-                title: task.title, 
-                state: task.state,
-                
-                bet_id: task.owner_bet.id, 
-                term_hours: task.owner_bet.term_hours, 
-                bet_amount: task.owner_bet.bet_amount,
-                ...overrides
+                id: bet.id,
+                term_hours: bet.term_hours, 
+                bet_amount: bet.bet_amount,
             },
-            onCompleted: () => { onBackButton({shouldRefetch: true}) },
         })
     }
+    
+    async function onSaveTaskAndBet() {
+        await Promise.all([saveTask(), saveBet()]);
+        onBackButton({shouldRefetch: true});
+    }
 
-    function onDelete() {
-        onSave({state: TASK_STATES.ABANDONED});
+    async function onSaveBet() {
+        await saveBet();
+        onBackButton({shouldRefetch: true});
+    }
+
+    async function changeTaskState({newState}) {
+        updateTask(t => { t.state = newState; });
+        await updateTaskMut({
+            variables: {
+                id: task.id, 
+                state: newState,
+                description: task.description, 
+                title: task.title,
+            },
+        });
+    }
+
+    function onDeleteTask() {
+        changeTaskState({newState: TASK_STATES.ABANDONED});
+        onBackButton({shouldRefetch: true});
     }
 
     function onLockBets() {
-        onSave({state: TASK_STATES.BETS_FINALIZED});
+        changeTaskState({newState: TASK_STATES.BETS_FINALIZED});
     }
 
     function onStart() {
-        onSave({state: TASK_STATES.IN_PROGRESS});
+        changeTaskState({newState: TASK_STATES.IN_PROGRESS});
+        onBackButton({shouldRefetch: true});
     }
 
     function onFinished() {
-        onSave({state: TASK_STATES.DONE});
+        changeTaskState({newState: TASK_STATES.DONE});
+        onBackButton({shouldRefetch: true});
     }
 
-    function Buttons() {
-        if (areCreating) {
-            return (
-                <Button text="CREATE" className="create-button" onClick={() => onCreate()}/>
-            )
-        } else if (task.state === TASK_STATES.ACCEPT_BETS) {
-            return (
+    function onDeleteBet() {
+        // not implemented
+    }
+
+    const canEditTask = task.state === TASK_STATES.ACCEPT_BETS && task.created_by === context.user.id;
+    const canEditBet = task.state === TASK_STATES.ACCEPT_BETS && bet.created_by === context.user.id;
+    let title = "";
+    let Buttons = null;
+    let minTermHours = null;
+    let maxTermHours = null;
+
+    if (areCreatingTask) {
+        title = "Create task";
+        Buttons = () => (
+            <Button text="CREATE" className="create-button" onClick={() => onCreateTaskAndBet()}/>
+        )
+    } else if (task.created_by === context.userId) {
+        title = "Edit task";
+        if (task.state === TASK_STATES.ACCEPT_BETS) {
+            Buttons = () => (
                 <>
-                    <Button text="SAVE" className="save-button"onClick={() => onSave()}/>
+                    <Button text="SAVE" className="save-button"onClick={() => onSaveTaskAndBet()}/>
                     <Button text="LOCK" className="lock-bets-button" onClick={() => onLockBets()}/>
-                    <Button text="DELETE" className="delete-button" onClick={() => onDelete()}/>
+                    <Button text="DELETE" className="delete-button" onClick={() => onDeleteTask()}/>
                 </>
             )
+            task.bets.forEach(b => {
+                if (b.created_by !== context.userId) {
+                    if (minTermHours === null || minTermHours > b.term_hours) {
+                        minTermHours = b.term_hours;
+                    }
+                }
+            });
         } else if (task.state === TASK_STATES.BETS_FINALIZED) {
-            return (
+            Buttons = () => (
                 <>
                     <Button text="START" className="start-button" onClick={() => onStart()}/>
-                    <Button text="DELETE" className="delete-button" onClick={() => onDelete()}/>
+                    <Button text="DELETE" className="delete-button" onClick={() => onDeleteTask()}/>
                 </>
             )
         } else if (task.state === TASK_STATES.IN_PROGRESS) {
-            return (
+            Buttons = () => (
                 <>
                     <Button text="FINISHED" className="finished-button" onClick={() => onFinished()}/>
-                    <Button text="DELETE" className="delete-button" onClick={() => onDelete()}/>
+                    <Button text="DELETE" className="delete-button" onClick={() => onDeleteTask()}/>
                 </>
             )
+        } else {
+            title = "View task";
+            Buttons = () => (<></>)
+        }
+    } else {
+        if (task.state === TASK_STATES.ACCEPT_BETS) {
+            maxTermHours = task.owner_bet.term_hours;
+            if (areCreatingBet) {
+                title = "Create bet";
+                Buttons = () => (
+                    <>
+                        <Button text="BET" className="create-button"onClick={() => onCreateBet()}/>
+                    </>
+                )
+            } else {
+                title = "Edit bet";
+                Buttons = () => (
+                    <>
+                        <Button text="SAVE" className="save-bet-button"onClick={() => onSaveBet()}/>
+                    </>
+                )
+            }
+        } else {
+            title = "View bet";
+            Buttons = () => (<></>)
         }
     }
 
-    const canEdit = task.state === TASK_STATES.ACCEPT_BETS;
-
-    const isLoading = createTaskResult.loading || createBetResult.loading || updateTaskAndBetResult.loading;
-    let error = createTaskResult.error || createBetResult.error || updateTaskAndBetResult.error;
-    if (!error) {
-        error = "";
+    const otherBets = []
+    if (task.created_by == context.userId) {
+        task.bets.filter(b => b.created_by !== context.userId).forEach((b, i) => {
+            otherBets.push({
+                ...b,
+                color: i < USER_COLORS.length ? USER_COLORS[i] : USER_COLORS[0],
+            })
+        });
+    } else {
+        otherBets.push({
+            ...task.owner_bet,
+            color: USER_COLORS[0],
+        })
     }
 
-    if (isLoading) {
+    const { loading, error } = joinQueries([
+        createTaskResult,
+        createBetResult,
+        updateTaskResult,
+        updateBetResult,
+        updateUserResult,
+    ]);
+    const errorMessage = error ? error : "";
+
+    if (loading) {
         return <LoadingBlock/>
     } else {
         return (
             <div className="screen task-editor">
                 <Logo/>
                 <BackButton onClick={onBackButton}/>
-                <label 
-                    className="section-title create-edit-label"
-                >
-                    {areCreating ? "Create task" : "Edit task" }
-                </label>
+                <label className="section-title create-edit-label">{title}</label>
                 <div className="input-wrapper title-wrapper">
                     <input 
                         className="input title" 
@@ -168,7 +278,7 @@ export const CreateEditTask = () => {
                         type="text"
                         placeholder="Title"
                         value={task.title}
-                        disabled={!canEdit}
+                        disabled={!canEditTask}
                         onChange={e => updateTask(t => { t.title = e.target.value; })}
                     />
                 </div>
@@ -178,7 +288,7 @@ export const CreateEditTask = () => {
                         id="description"
                         placeholder="Description"
                         value={task.description}
-                        disabled={!canEdit}
+                        disabled={!canEditTask}
                         onChange={e => updateTask(t => { t.description = e.target.value; })}
                     />
                 </div>
@@ -187,9 +297,12 @@ export const CreateEditTask = () => {
                     label="HOURS"
                     min="0" 
                     max="72" 
-                    value={task.owner_bet.term_hours} 
-                    disabled={!canEdit}
-                    onChange={e => updateTask(t => { t.owner_bet.term_hours = parseInt(e.target.value); })}
+                    minAvailable={minTermHours}
+                    maxAvailable={maxTermHours}
+                    value={bet.term_hours}
+                    otherValuesWithColor={otherBets.map(b => { return { value: b.term_hours, color: b.color}}) }
+                    disabled={!canEditBet}
+                    onChange={v => updateBet(b => { b.term_hours = v; })}
                     onFormatValue={hoursToDaysAndHours}
                 />
                 <Slider 
@@ -197,11 +310,24 @@ export const CreateEditTask = () => {
                     label="STARS"
                     min="1" 
                     max="100" 
-                    disabled={!canEdit}
-                    value={task.owner_bet.bet_amount} 
-                    onChange={e => updateTask(t => { t.owner_bet.bet_amount = parseInt(e.target.value); })}
+                    disabled={!canEditBet}
+                    value={bet.bet_amount} 
+                    otherValuesWithColor={otherBets.map(b => { return { value: b.bet_amount, color: b.color}}) }
+                    onChange={v => updateBet(b => { b.bet_amount = v; })}
                 />
-                <label className="error">{error.message}</label>
+                <UsersList 
+                    className="bets-legend"
+                    users={otherBets.map(b => { return { username: b.owner.username, color: b.color }})}
+                />
+                <div className="win-payout">
+                    <div className="win-payout-text">Win payout</div>
+                    <Stars 
+                        className="win-payout-amout" 
+                        value={calcWinPayout({task, bet})}
+                        formatAsEarning={true}
+                    />
+                </div>
+                <label className="error">{errorMessage}</label>
                 <Buttons />
                 <div className="footer"/>
             </div>

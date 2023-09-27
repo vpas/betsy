@@ -3,9 +3,9 @@ import {
     useContext,
 } from "react";
 import AppContext from "AppContext";
-import star_svg from "./star.svg"
 import "./UserInfo.css";
 import Profile from "screens/Profile";
+import Stars from "./Stars";
 
 export const UserInfo = ({user = null}) => {
     const context = useContext(AppContext);
@@ -22,8 +22,7 @@ export const UserInfo = ({user = null}) => {
     return (
         <div className="user-info" onClick={onClick}>
             <div className="username">{user.username}</div>
-            <div className="stars">{user.stars}</div>
-            <img className="icon-star" src={star_svg} alt="star"/>
+            <Stars className="balance" value={user.stars}/>
         </div>
     );
 };

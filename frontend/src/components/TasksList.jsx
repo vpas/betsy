@@ -2,16 +2,33 @@ import {
     React,
     useContext,
 } from "react";
-import AppContext from "AppContext";
+
 import TaskShort from "components/TaskShort";
+import CreateEditTask from "screens/CreateEditTask";
+import AppContext from "AppContext";
+import { ACTIONS } from "Consts";
 
 import "./TasksList.css";
 
-export const TasksList = ({tasks}) => {
+export const TasksList = ({tasks, onClickAction = ACTIONS.EDIT}) => {
     const context = useContext(AppContext);
+
+    function onClick({task, bet}) {
+        if (onClickAction === ACTIONS.EDIT) {
+            context.updateContext(c => {
+                c.prevScreenId = c.activeScreenId;
+                c.activeScreenId = CreateEditTask.name;
+                c.inputTask = task;
+                c.inputBet = bet;
+            });
+        } else if (onClickAction === ACTIONS.VIEW) {
+            // setShowLong();
+        }
+    }
+
     return (
         <div className="tasks-list">
-            {tasks.map(t => <TaskShort key={t.id} task={t}/>)}
+            {tasks.map(t => <TaskShort key={t.id} task={t} onClick={onClick}/>)}
         </div>
     );
 };
