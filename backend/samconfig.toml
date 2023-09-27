@@ -19,7 +19,6 @@ capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 fail_on_empty_changeset = false 
 s3_bucket = "betsy-backend-build"
-resolve_s3 = true
 s3_prefix = "betsy-backend"
 image_repositories = []
 
