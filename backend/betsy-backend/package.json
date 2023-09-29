@@ -2,11 +2,10 @@
   "name": "betsy-backend",
   "version": "1.0.0",
   "main": "app.mjs",
-  "scripts": {
-    
-  },
+  "scripts": {},
   "dependencies": {
-    
+    "@aws-sdk/client-dynamodb": "^3.420.0",
+    "aws-sdk": "^2.1465.0"
   },
   "devDependencies": {
     "aws-cdk-lib": "^2.94.0"
