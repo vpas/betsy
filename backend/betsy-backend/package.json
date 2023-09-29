@@ -5,9 +5,6 @@
   "scripts": {},
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.420.0",
-    "aws-sdk": "^2.1465.0"
-  },
-  "devDependencies": {
-    "aws-cdk-lib": "^2.94.0"
+    "@aws-sdk/util-dynamodb": "^3.421.0"
   }
 }
