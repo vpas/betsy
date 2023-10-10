@@ -9,19 +9,99 @@ Globals:
   Api:
     TracingEnabled: true
 Resources:
-  BetsyAPI:
+  BetsyAPIUsers:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: betsy-backend/
-      Handler: app.handler
+      Handler: app.usersHandler
       Runtime: nodejs18.x
       Architectures:
       - x86_64
       Events:
-        UsersGet:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+        UsersList:
+          Type: Api
           Properties:
             Path: /users
+            Method: get
+        UserGet:
+          Type: Api
+          Properties:
+            Path: /users/{id}
+            Method: get
+    
+  BetsyAPITasks:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: betsy-backend/
+      Handler: app.tasksHandler
+      Runtime: nodejs18.x
+      Architectures:
+      - x86_64
+      Events:
+        TasksList:
+          Type: Api
+          Properties:
+            Path: /tasks
+            Method: get
+        TaskGet:
+          Type: Api
+          Properties:
+            Path: /tasks/{id}
+            Method: get
+        TaskUpdate:
+          Type: Api
+          Properties:
+            Path: /tasks/{id}
+            Method: post
+
+  BetsyAPIBets:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: betsy-backend/
+      Handler: app.betsHandler
+      Runtime: nodejs18.x
+      Architectures:
+      - x86_64
+      Events:
+        BetsList:
+          Type: Api
+          Properties:
+            Path: /bets
+            Method: get
+        BetGet:
+          Type: Api
+          Properties:
+            Path: /bets/{id}
+            Method: get
+        BetUpdate:
+          Type: Api
+          Properties:
+            Path: /bets/{id}
+            Method: post
+        BetCreate:
+          Type: Api
+          Properties:
+            Path: /bets/
+            Method: post
+    
+  BetsyAPIActions:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: betsy-backend/
+      Handler: app.actionsHandler
+      Runtime: nodejs18.x
+      Architectures:
+      - x86_64
+      Events:
+        ActionsCreateTaskWithBet:
+          Type: Api
+          Properties:
+            Path: /actions/create_task_with_bet
+            Method: post
+        ActionsSetTaskState:
+          Type: Api
+          Properties:
+            Path: /actions/set_task_state
             Method: get
           
         
