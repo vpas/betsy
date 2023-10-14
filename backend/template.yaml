@@ -48,6 +48,11 @@ Resources:
           Properties:
             Path: /tasks/{id}
             Method: get
+        TaskGetBets:
+          Type: Api
+          Properties:
+            Path: /tasks/{id}/bets
+            Method: get
         TaskUpdate:
           Type: Api
           Properties:
@@ -102,7 +107,7 @@ Resources:
           Type: Api
           Properties:
             Path: /actions/set_task_state
-            Method: get
+            Method: post
           
         
     Metadata: # Manage esbuild properties
