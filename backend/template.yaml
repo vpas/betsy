@@ -28,6 +28,11 @@ Resources:
           Properties:
             Path: /users/{id}
             Method: get
+        UserLogin:
+          Type: Api
+          Properties:
+            Path: /users/login
+            Method: post
     
   BetsyAPITasks:
     Type: AWS::Serverless::Function

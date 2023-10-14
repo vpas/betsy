@@ -1,8 +1,8 @@
-import { 
-  DynamoDBClient, 
-  GetItemCommand, 
+import {
+  DynamoDBClient,
+  GetItemCommand,
   UpdateItemCommand,
-  ScanCommand, 
+  ScanCommand,
   TransactWriteItemsCommand,
 } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb"
@@ -39,22 +39,51 @@ export const BET_CONDITION = {
 export async function getUser(id) {
   const command = new GetItemCommand({
     TableName: "betsy_users",
-    Key: {"id": {"S": id}},
+    Key: { "id": { "S": id } },
   });
   const response = await dbClient.send(command);
   const user = unmarshall(response.Item);
   return user;
 }
 
+export async function login(loginData) {
+  const response = await dbClient.send(new ScanCommand({
+    TableName: "betsy_users",
+    FilterExpression: "email = :email",
+    ExpressionAttributeValues: {
+      ":email": { "S": loginData.email },
+    },
+  }));
+  const loginResponse = {};
+  const users = response.Items.map(i => unmarshall(i));
+  if (users.length === 0) {
+    loginResponse.message = "No user found";
+  } else if (users.length > 1) {
+    loginResponse.message = "Multiple users found";
+  } else {
+    loginResponse.user = users[0];
+  }
+  return loginResponse;
+}
+
 export const usersHandler = async (event, context) => {
   let statusCode = 200;
   let responseBody = "";
+
+  let requestBody = null;
+  if (event.body) {
+    requestBody = JSON.parse(event.body);
+    console.log("requestBody: \n" + JSON.stringify(requestBody));
+  }
+
   try {
     console.log(event.pathParameters);
     console.log("fetching data from dynamodb");
     let command;
     const commandInput = { TableName: "betsy_users" };
-    if (event.pathParameters !== null && event.pathParameters.id !== null) {
+    if (event.path === "/users/login") {
+      responseBody = JSON.stringify(await login(requestBody))
+    } else if (event.pathParameters !== null && event.pathParameters.id !== null) {
       const id = event.pathParameters.id;
       const user = await getUser(id);
       responseBody = JSON.stringify(user);
@@ -65,8 +94,8 @@ export const usersHandler = async (event, context) => {
       const users = response.Items.map(i => unmarshall(i));
       responseBody = JSON.stringify(users);
     }
-    
-  } catch(e) {
+
+  } catch (e) {
     console.log(e);
     responseBody = e.toString();
     statusCode = 500;
@@ -86,13 +115,13 @@ export const tasksHandler = async (event, context) => {
   let responseBody = "";
   try {
     console.log(event.pathParameters);
-    
+
     let requestBody = null;
     if (event.body) {
       requestBody = JSON.parse(event.body);
       console.log("requestBody: \n" + JSON.stringify(requestBody));
     }
-    
+
     console.log("fetching data from dynamodb");
     let command;
     const commandInput = { TableName: "betsy_tasks" };
@@ -101,11 +130,11 @@ export const tasksHandler = async (event, context) => {
       if (event.httpMethod === 'GET') {
         if (event.path.endsWith('bets')) {
           const bets = await getAllTaskBets(id);
-          responseBody = JSON.stringify(bets);  
+          responseBody = JSON.stringify(bets);
         } else {
           command = new GetItemCommand({
             ...commandInput,
-            "Key": {"id": {"S": id}},
+            "Key": { "id": { "S": id } },
           });
           const response = await dbClient.send(command);
           // console.log(JSON.stringify(response.Item));
@@ -115,7 +144,7 @@ export const tasksHandler = async (event, context) => {
       } else if (event.httpMethod === 'POST') {
         command = new UpdateItemCommand({
           ...commandInput,
-          Key: {"id": {"S": id}},
+          Key: { "id": { "S": id } },
           UpdateExpression: "SET title = :title, description = :description, updated_at = :updated_at",
           ConditionExpression: "task_state = :task_state",
           ExpressionAttributeValues: {
@@ -134,8 +163,8 @@ export const tasksHandler = async (event, context) => {
       const tasks = response.Items.map(i => unmarshall(i));
       responseBody = JSON.stringify(tasks);
     }
-    
-  } catch(e) {
+
+  } catch (e) {
     console.log(e);
     responseBody = e.toString();
     statusCode = 500;
@@ -157,7 +186,7 @@ async function createBet(bet) {
   bet.updated_at = new Date().toISOString();
 
   const input = { // TransactWriteItemsInput
-    TransactItems: [ 
+    TransactItems: [
       { // TransactWriteItem
         Put: {
           TableName: "betsy_bets",
@@ -167,7 +196,7 @@ async function createBet(bet) {
       {
         ConditionCheck: {
           TableName: "betsy_tasks",
-          Key: {"id": { "S": bet.task_id }},
+          Key: { "id": { "S": bet.task_id } },
           ConditionExpression: "task_state = :task_state",
           ExpressionAttributeValues: {
             ":task_state": { "S": TASK_STATES.ACCEPT_BETS },
@@ -187,11 +216,11 @@ async function updateBet(updateData) {
   bet.term_hours = updateData.term_hours;
   bet.bet_amount = updateData.bet_amount;
   const input = { // TransactWriteItemsInput
-    TransactItems: [ 
+    TransactItems: [
       { // TransactWriteItem
         Update: {
           TableName: "betsy_bets",
-          Key: {"id": {"S": bet.id}},
+          Key: { "id": { "S": bet.id } },
           UpdateExpression: "SET bet_amount = :amount, term_hours = :hours, updated_at = :updated_at",
           ExpressionAttributeValues: {
             ":amount": { "N": bet.bet_amount.toString() },
@@ -203,7 +232,7 @@ async function updateBet(updateData) {
       {
         ConditionCheck: {
           TableName: "betsy_tasks",
-          Key: {"id": {"S": bet.task_id}},
+          Key: { "id": { "S": bet.task_id } },
           ConditionExpression: "task_state = :task_state",
           ExpressionAttributeValues: {
             ":task_state": { "S": TASK_STATES.ACCEPT_BETS },
@@ -221,7 +250,7 @@ async function updateBet(updateData) {
 export async function getBet(id) {
   const command = new GetItemCommand({
     TableName: "betsy_bets",
-    Key: {"id": {"S": id}},
+    Key: { "id": { "S": id } },
   });
   const response = await dbClient.send(command);
   const bet = unmarshall(response.Item);
@@ -268,8 +297,8 @@ export const betsHandler = async (event, context) => {
         responseBody = JSON.stringify(bet);
       }
     }
-    
-  } catch(e) {
+
+  } catch (e) {
     console.log(e);
     responseBody = e.toString();
     statusCode = 500;
@@ -289,16 +318,16 @@ async function createTaskWithBet(task, bet) {
   task.task_state = TASK_STATES.ACCEPT_BETS;
   task.created_at = new Date().toISOString();
   task.updated_at = new Date().toISOString();
-  
+
   bet.id = uuidv4();
   bet.task_id = task.id;
   bet.created_by = task.created_by;
   bet.bet_condition = BET_CONDITION.DONE_IN_TIME;
   bet.created_at = new Date().toISOString();
   bet.updated_at = new Date().toISOString();
-  
+
   const input = { // TransactWriteItemsInput
-    TransactItems: [ 
+    TransactItems: [
       { // TransactWriteItem
         Put: {
           Item: marshall(task),
@@ -322,7 +351,7 @@ async function createTaskWithBet(task, bet) {
 async function getTask(id) {
   const command = new GetItemCommand({
     TableName: "betsy_tasks",
-    Key: {"id": {"S": id}},
+    Key: { "id": { "S": id } },
   });
   const response = await dbClient.send(command);
   return unmarshall(response.Item);
@@ -345,7 +374,7 @@ async function getAllTaskBets(taskId) {
   return bets;
 }
 
-function calcFinalPayout({bets, wasFinishedInTime}) {
+function calcFinalPayout({ bets, wasFinishedInTime }) {
   const ownerBet = getTaskOwnerBet(bets);
   if (bets.length === 1) {
     bets[0].final_payout = 0;
@@ -355,37 +384,37 @@ function calcFinalPayout({bets, wasFinishedInTime}) {
     const total = activeBets.reduce((sum, b) => sum + b.bet_amount, 0);
     const totalAgainst = total - ownerBet.bet_amount;
     bets.forEach(b => {
-        if (b.id === ownerBet.id) {
-          if (wasFinishedInTime) {
-            b.final_payout = totalAgainst;
-          } else {
-            b.final_payout = -b.bet_amount;
-          }
-        } else if (isActive(b)) {
-          if (wasFinishedInTime) {
-            b.final_payout = -b.bet_amount;
-          } else {
-            b.final_payout = ownerBet.bet_amount * (b.bet_amount / totalAgainst);
-          }
+      if (b.id === ownerBet.id) {
+        if (wasFinishedInTime) {
+          b.final_payout = totalAgainst;
         } else {
-            b.final_payout = 0;
+          b.final_payout = -b.bet_amount;
         }
+      } else if (isActive(b)) {
+        if (wasFinishedInTime) {
+          b.final_payout = -b.bet_amount;
+        } else {
+          b.final_payout = ownerBet.bet_amount * (b.bet_amount / totalAgainst);
+        }
+      } else {
+        b.final_payout = 0;
+      }
     });
   }
 }
 
-async function onTaskClosed({id, wasFinishedInTime, ownerBonus, input}) {
+async function onTaskClosed({ id, wasFinishedInTime, ownerBonus, input }) {
   const bets = await getAllTaskBets(id);
   const ownerBet = getTaskOwnerBet(bets);
   calcFinalPayout({
-    bets: bets, 
+    bets: bets,
     wasFinishedInTime: wasFinishedInTime,
   });
   bets.forEach(b => {
     input.TransactItems.push({ // TransactWriteItem
       Update: {
         TableName: "betsy_bets",
-        Key: {"id": {"S": b.id}},
+        Key: { "id": { "S": b.id } },
         UpdateExpression: "SET final_payout = :final_payout, updated_at = :updated_at",
         ExpressionAttributeValues: {
           ":final_payout": { "N": b.final_payout.toString() },
@@ -400,7 +429,7 @@ async function onTaskClosed({id, wasFinishedInTime, ownerBonus, input}) {
     input.TransactItems.push({ // TransactWriteItem
       Update: {
         TableName: "betsy_users",
-        Key: {"id": {"S": b.created_by }},
+        Key: { "id": { "S": b.created_by } },
         UpdateExpression: "SET stars = stars + :final_payout",
         ExpressionAttributeValues: {
           ":final_payout": { "N": payout.toString() },
@@ -420,14 +449,14 @@ function hoursSince(sinceDate) {
 
 async function setTaskState(id, newState) {
   console.log(`TASK_EXPECTED_PREV_STATES[newState]: ${TASK_EXPECTED_PREV_STATES[newState]}`);
-  const expectedPrevStates = new Map(TASK_EXPECTED_PREV_STATES[newState].map(s => [`:task_state_${s}`, {"S": s}]));
+  const expectedPrevStates = new Map(TASK_EXPECTED_PREV_STATES[newState].map(s => [`:task_state_${s}`, { "S": s }]));
   const expectedPrevStatesStr = Array.from(expectedPrevStates.keys()).join(',');
   const input = { // TransactWriteItemsInput
-    TransactItems: [ 
+    TransactItems: [
       { // TransactWriteItem
         Update: {
           TableName: "betsy_tasks",
-          Key: {"id": {"S": id}},
+          Key: { "id": { "S": id } },
           UpdateExpression: "SET task_state = :task_state, updated_at = :updated_at",
           ConditionExpression: `task_state IN (${expectedPrevStatesStr})`,
           ExpressionAttributeValues: {
@@ -441,7 +470,7 @@ async function setTaskState(id, newState) {
     // TODO
     // ClientRequestToken: "STRING_VALUE",
   };
-  
+
   if (newState === TASK_STATES.IN_PROGRESS) {
     input.TransactItems[0].Update.UpdateExpression += ", started_at = :started_at";
     input.TransactItems[0].Update.ExpressionAttributeValues[":started_at"] = { "S": new Date().toISOString() };
@@ -491,7 +520,7 @@ export const actionsHandler = async (event, context) => {
       const newState = requestBody.task_state;
       await setTaskState(id, newState);
     }
-  } catch(e) {
+  } catch (e) {
     console.log(e);
     responseBody = e.toString();
     statusCode = 500;
