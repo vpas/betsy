@@ -55,6 +55,7 @@ export async function getUser(id) {
 export async function login(loginData) {
   const response = await dbClient.send(new ScanCommand({
     TableName: "betsy_users",
+    ConsistentRead: true,
     FilterExpression: "email = :email",
     ExpressionAttributeValues: {
       ":email": { "S": loginData.email },
@@ -86,7 +87,6 @@ export const usersHandler = async (event, context) => {
     console.log(event.pathParameters);
     console.log("fetching data from dynamodb");
     let command;
-    const commandInput = { TableName: "betsy_users" };
     if (event.path === "/users/login") {
       responseBody = JSON.stringify(await login(requestBody))
     } else if (event.pathParameters !== null && event.pathParameters.id !== null) {
@@ -94,7 +94,10 @@ export const usersHandler = async (event, context) => {
       const user = await getUser(id);
       responseBody = JSON.stringify(user);
     } else {
-      command = new ScanCommand(commandInput);
+      command = new ScanCommand({ 
+        TableName: "betsy_users",
+        ConsistentRead: true,
+      });
       const response = await dbClient.send(command);
       // console.log(JSON.stringify(response));
       const users = response.Items.map(i => unmarshall(i));
@@ -164,7 +167,10 @@ export const tasksHandler = async (event, context) => {
         await dbClient.send(command);
       }
     } else {
-      command = new ScanCommand(commandInput);
+      command = new ScanCommand({
+        ...commandInput,
+        ConsistentRead: true,
+      });
       const response = await dbClient.send(command);
       // console.log(JSON.stringify(response));
       const tasks = response.Items.map(i => unmarshall(i));
@@ -294,7 +300,10 @@ export const betsHandler = async (event, context) => {
       }
     } else {
       if (event.httpMethod === 'GET') {
-        command = new ScanCommand(commandInput);
+        command = new ScanCommand({
+          ...commandInput,
+          ConsistentRead: true,
+        });
         const response = await dbClient.send(command);
         // console.log(JSON.stringify(response));
         const bets = response.Items.map(i => unmarshall(i));
@@ -373,6 +382,7 @@ function getTaskOwnerBet(bets) {
 async function getAllTaskBets(taskId) {
   const command = new ScanCommand({
     TableName: "betsy_bets",
+    ConsistentRead: true,
     FilterExpression: "task_id = :task_id",
     ExpressionAttributeValues: {
       ":task_id": { "S": taskId },
