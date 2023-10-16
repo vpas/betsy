@@ -8,6 +8,12 @@ import {
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb"
 import { v4 as uuidv4 } from 'uuid';
 
+const DEFAULT_HEADERS = {
+  "Access-Control-Allow-Headers" : "*",
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "*",
+}
+
 const dbClient = new DynamoDBClient({ region: "eu-central-1" });
 
 export const TASK_STATES = {
@@ -104,6 +110,7 @@ export const usersHandler = async (event, context) => {
   return {
     "statusCode": statusCode,
     "headers": {
+      ...DEFAULT_HEADERS,
       "Content-Type": "application/json"
     },
     "body": responseBody
@@ -173,6 +180,7 @@ export const tasksHandler = async (event, context) => {
   return {
     statusCode: statusCode,
     headers: {
+      ...DEFAULT_HEADERS,
       "Content-Type": "application/json"
     },
     body: responseBody
@@ -307,6 +315,7 @@ export const betsHandler = async (event, context) => {
   return {
     "statusCode": statusCode,
     "headers": {
+      ...DEFAULT_HEADERS,
       "Content-Type": "application/json"
     },
     "body": responseBody
@@ -529,6 +538,7 @@ export const actionsHandler = async (event, context) => {
   return {
     "statusCode": statusCode,
     "headers": {
+      ...DEFAULT_HEADERS,
       "Content-Type": "application/json"
     },
     "body": responseBody
