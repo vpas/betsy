@@ -21,7 +21,7 @@ export const History = () => {
     const context = useContext(AppContext);
     const [tab, setTab] = useState(TABS.TASKS);
     const finalizedTasks = context.tasks.filter(
-        t => !TASK_STATES_ACTIVE.has(t.state));
+        t => !TASK_STATES_ACTIVE.has(t.task_state));
     const ourTasks = finalizedTasks.filter(
         t => t.created_by === context.user.id);
     const tasksWithOurBets = finalizedTasks.filter(

@@ -4,22 +4,21 @@ import {
 } from "react";
 
 import Stars from "components/Stars";
-import CreateEditTask from "screens/CreateEditTask";
 import AppContext from "AppContext";
-import { TASK_STATES, TASK_STATE_MESSAGES, ACTIONS } from "Consts";
+import { TASK_STATES, TASK_STATE_MESSAGES } from "Consts";
 import "./TaskShort.css";
 
-export const TaskShort = ({task, onClick = ({}) => {}}) => {
+export const TaskShort = ({task, onClick = () => {}}) => {
     const context = useContext(AppContext);
     const ourBet = task.bets.find(b => b.created_by === context.userId);
     const isOurs = task.created_by === context.userId;
-    const hasBonus = isOurs && task.state === TASK_STATES.DONE;
+    const hasBonus = isOurs && task.task_state === TASK_STATES.DONE;
     
     const bet = ourBet ? ourBet : task.owner_bet;
     
     let starsValue;
     let formatAsEarning;
-    if (ourBet && ourBet.final_payout !== null) {
+    if (ourBet && ourBet.final_payout != null) {
         starsValue = ourBet.final_payout;
         formatAsEarning = true;
     } else {
@@ -47,7 +46,7 @@ export const TaskShort = ({task, onClick = ({}) => {}}) => {
     return (
         <div className="task-short" onClick={() => onClick({task: task, bet: ourBet})}>
             <div className="title">{task.title}</div>
-            <div className="status">{TASK_STATE_MESSAGES[task.state]}</div>
+            <div className="status">{TASK_STATE_MESSAGES[task.task_state]}</div>
             <div 
                 className="owner"
                 style={{ visibility: task.owner.id !== context.userId ? "visible" : "hidden" }}

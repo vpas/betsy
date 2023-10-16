@@ -15,7 +15,7 @@ export const Explore = () => {
     const context = useContext(AppContext);
     const tasksAcceptingBets = context.tasks.filter(
         t => (
-            t.state === TASK_STATES.ACCEPT_BETS &&
+            t.task_state === TASK_STATES.ACCEPT_BETS &&
             t.created_by !== context.userId &&
             t.bets.every(b => b.created_by !== context.userId)
         )

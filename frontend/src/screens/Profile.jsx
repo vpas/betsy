@@ -3,7 +3,6 @@ import {
     useContext,
 } from "react";
 import { useCookies } from 'react-cookie';
-import { useApolloClient} from '@apollo/client';
 
 import AppContext from "AppContext";
 import Logo from "components/Logo"
@@ -18,8 +17,7 @@ export const Profile = () => {
     const context = useContext(AppContext);
     const user = context.user;
     const [, setCookie] = useCookies(['user_id']);
-    const client = useApolloClient();
-
+    
     function onBackButton({shouldRefetch = false}) {
         context.updateContext(c => { 
             c.activeScreenId = Home.name;
@@ -29,7 +27,6 @@ export const Profile = () => {
 
     async function onLogout() {
         setCookie('user_id', null);
-        await client.resetStore();
         context.updateContext(c => {
             c.userId = null;
             c.user = null;

@@ -1,15 +1,10 @@
 import {
     React,
-    useContext,
 } from "react";
-
-import AppContext from "AppContext";
 
 import "./UsersList.css";
 
 export const UsersList = ({users, className}) => {
-    const context = useContext(AppContext);
-
     return (
         <div className={className + " users-list"}>
             {users.map((u, i) => 

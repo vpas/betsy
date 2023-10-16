@@ -1,41 +1,28 @@
-import React from "react";
-import { useState } from 'react';
-import { 
-    useApolloClient,
-    NetworkStatus,
-} from '@apollo/client';
+import { React, useState, useContext } from 'react';
 
 import Logo from "components/Logo"
 import Button from "components/Button"
-import {GET_USER_BY_EMAIL} from "GraphQLQueries";
+import AppContext from "AppContext";
 
 import "./Login.css";
 
 export const Login = ({setUser}) => {
-    const client = useApolloClient();
+    const context = useContext(AppContext);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
     async function onLogin() {
         console.log("onLogin");
-        const result = await client.query({
-            query: GET_USER_BY_EMAIL,
-            variables: { "email": email },
-        });
+        const response = await context.axios.post('users/login', { "email": email });
         
-        if (result.networkStatus !== NetworkStatus.ready) {
-            setError("Network error");
-            return;
+        if (response.data.user) {
+          console.log(response.data.user);
+          setUser(response.data.user);
+        } else {
+          console.log(response.data.message);
+          setError("No user found");
         }
-        if (result.data.users.length == 0) {
-            setError("No user found");
-            return;
-        }
-        let user = result.data.users[0];
-        console.log(user);
-
-        setUser(user);
     }
 
     return (

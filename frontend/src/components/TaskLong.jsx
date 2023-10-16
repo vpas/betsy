@@ -10,7 +10,7 @@ export const TaskLong = ({task, bet, onClick}) => {
     return (
         <div className="task-long" onClick={() => onClick({task, bet})}>
             <div className="title">{task.title}</div>
-            <div className="status">{TASK_STATE_MESSAGES[task.state]}</div>
+            <div className="status">{TASK_STATE_MESSAGES[task.task_state]}</div>
             <textarea 
                 className="description" 
                 value={task.description}

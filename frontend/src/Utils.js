@@ -28,7 +28,7 @@ export function matchTasksAndBets(tasks, bets) {
 }
 
 export function calcWinPayouts(task) {
-    console.log(task);
+    // console.log(task);
     if (task.bets.length === 1) {
         task.bets[0].win_payout = 0;
     } else if (task.bets.length === 2) {
@@ -78,7 +78,7 @@ export function newTask({user}) {
         created_by: user.id,
         title: "",
         desciption: "",
-        state: "accept_bets",
+        task_state: "accept_bets",
         bets: [],
     };
 }

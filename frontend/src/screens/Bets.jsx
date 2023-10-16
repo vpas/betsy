@@ -15,7 +15,7 @@ export const Bets = () => {
     const context = useContext(AppContext);
     const tasksWithOurBets = context.tasks.filter(
         t => (
-            TASK_STATES_ACTIVE.has(t.state) &&
+            TASK_STATES_ACTIVE.has(t.task_state) &&
             t.created_by !== context.userId &&
             t.bets.some(b => b.created_by === context.userId)
         )

@@ -1,8 +1,5 @@
 /** @jsxImportSource @emotion/react */
 
-import React from "react";
-import { css } from '@emotion/react'
-
 import "./Slider.css";
 
 export const Slider = ({
