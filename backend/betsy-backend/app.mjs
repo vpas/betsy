@@ -520,10 +520,10 @@ export const actionsHandler = async (event, context) => {
       const task = requestBody.task;
       const bet = requestBody.bet;
       await createTaskWithBet(task, bet);
-      responseBody = {
+      responseBody = JSON.stringify({
         "task": task,
         "bet": bet,
-      }
+      });
     } else if (event.path === "/actions/set_task_state") {
       const id = requestBody.id;
       const newState = requestBody.task_state;
