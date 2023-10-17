@@ -20,3 +20,33 @@
     left: 20px;
     text-align: left;
 }
+
+.input-wrapper {
+  position: absolute;
+  left: 20px;
+  width: 335px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.input-wrapper.input-error {
+  border: 1px solid #DD665E;
+}
+
+.input {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 20px;
+  border: none;
+  background: none;
+  outline: none;
+  
+  color: #FFF;
+  font-family: Poppins;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 300;
+  line-height: normal;
+  opacity: 0.9;
+}

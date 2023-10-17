@@ -12,35 +12,34 @@
     text-transform: uppercase;
     opacity: 0.2;
 }
-.login .email {
-    display: flex;
-    justify-content: center;
-    position: relative;
-    top: 110px;
-    width: 100%;
+.login .email-wrapper {
+    top: 243px;
+    height: 48px;
 }
-.login .password {
-    display: flex;
-    justify-content: center;
-    position: relative;
-    top: 140px;
-    width: 100%;
+.login .password-wrapper {
+    top: 307px;
+    height: 48px;
 }
 .login .error {
     display: flex;
     justify-content: center;
-    position: relative;
-    top: 160px;
-    color: rgb(182, 7, 7);
+    position: absolute;
+    color: #DD665E;
+    font-family: Poppins;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
     text-align: center;
+    top: 371px;
+    height: 16px;
     width: 100%;
 }
 .login .login-button {
-    display: flex;
-    justify-content: center;
-    position: relative;
-    top: 200px;
-    align-self: center;
-    align-content: center;
-    align-items: center;
+    position: absolute;
+    top: 451px;
+    left: 87px;
+    width: 201px;
+    height: 52px;
+    padding: 0px;
 }

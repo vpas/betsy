@@ -8,33 +8,6 @@
     top: 146px;
 }
 
-.task-editor .input-wrapper {
-    position: absolute;
-    left: 20px;
-    width: 335px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.03);
-}
-
-.task-editor .input {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 20px;
-    border: none;
-    background: none;
-    
-    /* color: #FFFFFF; */
-    color: white;
-    font-family: Poppins;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: normal;
-    opacity: 0.9;
-    outline: none;
-}
-
 .task-editor .title-wrapper {
     top: 174px;
     height: 64px;

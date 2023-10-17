@@ -21,34 +21,41 @@ export const Login = ({setUser}) => {
           setUser(response.data.user);
         } else {
           console.log(response.data.message);
-          setError("No user found");
+          setError("Login or password is not correct");
         }
     }
+
+    const classError = error ? " input-error" : "";
 
     return (
         <div className="screen login">
             <Logo/>
             <form>
                 <div className="login-text">LOGIN</div>
-                <input 
-                    type="email" 
-                    className="email"
-                    value={email}
-                    placeholder="Email"
-                    onChange={e => setEmail(e.target.value)}
-                />
-                <input 
-                    type="password" 
-                    className="password"
-                    value={password}
-                    placeholder="Password"
-                    onChange={e => setPassword(e.target.value)}
-                />
+                <div className={"input-wrapper email-wrapper" + classError}>
+                  <input 
+                      type="email" 
+                      className="input email"
+                      value={email}
+                      placeholder="Email"
+                      onChange={e => setEmail(e.target.value)}
+                  />
+                </div>
+                <div className={"input-wrapper password-wrapper" + classError}>
+                  <input 
+                      type="password" 
+                      className="input password"
+                      value={password}
+                      placeholder="Password"
+                      onChange={e => setPassword(e.target.value)}
+                  />
+                </div>
                 <label className="error">{error}</label>
                 <Button 
                     text="LOG IN" 
                     className="login-button"
                     onClick={onLogin}
+                    disabled={email === ""}
                 />
             </form>
         </div>
