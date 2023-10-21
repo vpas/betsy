@@ -1,24 +1,51 @@
 .App .content {
-    width: 375px;
+  width: 375px;
 }
 
 .screen {
-    width: 375px;
-    text-align: center;
-    position: relative;
+  width: 375px;
+  text-align: center;
+  position: relative;
+}
+
+.scroll-track {
+  position: absolute;
+  overflow: hidden;
+  user-select: none;
+  width: 4px;
+  height: calc(100%);
+  top: 0px;
+  right: 0px;
+}
+
+.scroll-thumb {
+  background-color: white;
+  opacity: 0.5;
+  display: block;
+  border-radius: 3px;
 }
 
 .section-title {
-    color: rgba(255, 255, 255, 0.2);
-    font-family: Poppins;
-    font-size: 12px;
-    font-style: normal;
-    font-weight: 600;
-    line-height: normal;
-    text-transform: uppercase;
-    height: 16px;
-    left: 20px;
-    text-align: left;
+  left: 40px;
+  text-align: left;
+
+  color: #FFF;
+  font-family: Poppins;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  letter-spacing: 0.14px;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+.screen-title {
+  text-align: center;
+  /* position: relative; */
+  /* top: 82px; */
+  width: 100%;
+  color: white;
 }
 
 .input-wrapper {
@@ -41,12 +68,73 @@
   border: none;
   background: none;
   outline: none;
-  
+
   color: #FFF;
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  opacity: 1;
+}
+
+
+/* Typography */
+.h1 {
+  font-family: Poppins;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+}
+
+.h2 {
+  font-family: Poppins;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-transform: uppercase;
+}
+
+.h3 {
   font-family: Poppins;
   font-size: 14px;
   font-style: normal;
-  font-weight: 300;
+  font-weight: 600;
   line-height: normal;
-  opacity: 0.9;
+  letter-spacing: 0.14px;
+  text-transform: uppercase;
+}
+
+.h4 {
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 21px;
+}
+
+.body1 {
+  font-family: Poppins;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.body2 {
+  font-family: Poppins;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.body3 {
+  font-family: Poppins;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 }

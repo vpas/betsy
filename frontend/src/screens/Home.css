@@ -1,3 +1,7 @@
+.home .logo-wrapper {
+  top: 80px;
+}
+
 .home .user-info {
     position: absolute;
     top: 110px;

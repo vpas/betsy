@@ -5,18 +5,18 @@ import {
 } from "react";
 import { useImmer } from 'use-immer';
 
-import Logo from "components/Logo";
+import TaskState from "components/TaskState";
 import BackButton from "components/BackButton";
 import Button from "components/Button";
 import LoadingBlock from "components/LoadingBlock";
 import Slider from "components/Slider";
 import Stars from "components/Stars";
+import UsersList from "components/UsersList";
 import AppContext from "AppContext";
 import { hoursToDaysAndHours, newTask, newBet, calcWinPayout } from "Utils"
 import { TASK_STATES, USER_COLORS } from "Consts";
 
 import "./CreateEditTask.css";
-import UsersList from "components/UsersList";
 
 export const CreateEditTask = () => {
   const context = useContext(AppContext);
@@ -254,9 +254,12 @@ export const CreateEditTask = () => {
   } else {
     return (
       <div className="screen task-editor">
-        <Logo />
         <BackButton onClick={onBackButton} />
-        <label className="section-title create-edit-label">{title}</label>
+        <div 
+          className="screen-title h2 create-edit-label">
+            {title}
+        </div>
+        <TaskState state={task.task_state} className="task-state"/>
         <div className="input-wrapper title-wrapper">
           <input
             className="input title"

@@ -25,13 +25,19 @@ export const Login = ({setUser}) => {
         }
     }
 
+    function onKeyDown(event) {
+      if (event.key === 'Enter'){
+        onLogin();
+      }
+    }
+
     const classError = error ? " input-error" : "";
 
     return (
         <div className="screen login">
             <Logo/>
             <form>
-                <div className="login-text">LOGIN</div>
+                <div className="login-text section-title">LOG IN</div>
                 <div className={"input-wrapper email-wrapper" + classError}>
                   <input 
                       type="email" 
@@ -39,6 +45,7 @@ export const Login = ({setUser}) => {
                       value={email}
                       placeholder="Email"
                       onChange={e => setEmail(e.target.value)}
+                      onKeyDown={onKeyDown}
                   />
                 </div>
                 <div className={"input-wrapper password-wrapper" + classError}>
@@ -48,6 +55,7 @@ export const Login = ({setUser}) => {
                       value={password}
                       placeholder="Password"
                       onChange={e => setPassword(e.target.value)}
+                      onKeyDown={onKeyDown}
                   />
                 </div>
                 <label className="error">{error}</label>

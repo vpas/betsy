@@ -1,4 +1,6 @@
 import React from "react";
+import logo_svg from "./logo.svg"
+
 import "./Logo.css";
 
 export const Logo = () => {
@@ -7,6 +9,7 @@ export const Logo = () => {
             <div className="logo">
                 betsy
             </div>
+            {/* <img className="logo" alt="Icon logo" src={logo_svg} /> */}
         </div>
     );
 };

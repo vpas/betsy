@@ -5,7 +5,8 @@ import "./BackButton.css"
 export const BackButton = ({onClick}) => {
     return (
         <div className="back-button" onClick={onClick}>
-            <BackButtonSvg/>
+            <BackButtonSvg className="back-icon"/>
+            <div className="back-text body1">Back</div>
         </div>
     );
 };

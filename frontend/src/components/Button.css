@@ -1,28 +1,29 @@
 .button-wrapper {
-    align-items: center;
-    background-color: #36D3CA;
-    border-radius: 12px;
-    display: inline-flex;
-    gap: 8px;
-    justify-content: center;
-    overflow: hidden;
-    padding: 16px 0px;
-    position: relative;
-    cursor: pointer;
-    width: 120px;
+  align-items: center;
+  background-color: #36D3CA;
+  border-radius: 12px;
+  display: inline-flex;
+  gap: 8px;
+  justify-content: center;
+  overflow: hidden;
+  padding: 16px 0px;
+  position: relative;
+  cursor: pointer;
+  width: 255px;
+  height: 52px;
 }
 
 .button-wrapper .button {
-    color: #ffffff;
-    font-family: "Poppins-SemiBold", Helvetica;
-    font-size: 22px;
-    font-weight: 600;
-    height: 20px;
-    letter-spacing: 0;
-    line-height: normal;
-    margin-top: -1px;
-    position: relative;
-    white-space: nowrap;
+  position: relative;
+
+  color: #FFF;
+  text-align: center;
+  font-family: Poppins;
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-transform: uppercase;
 }
 
 .button-wrapper.disabled {
@@ -31,7 +32,4 @@
   opacity: 0.2;
 }
 
-.button-wrapper .button.disabled {
-}
-
-
+.button-wrapper .button.disabled {}

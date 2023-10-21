@@ -136,12 +136,29 @@ export const AppContent = () => {
   } else {
     return (
       <>
-        <Menu />
         <div className="content">
           <Scrollbar
             style={{
-              height: window.innerHeight - 82,
+              height: window.innerHeight - 103,
               width: 375
+            }}
+            trackYProps={{
+              renderer: (props) => {
+                const { elementRef, ...restProps } = props;
+                delete restProps.style;
+                return <span {...restProps} ref={elementRef} className="scroll-track" />;
+              },
+            }}
+            thumbYProps={{
+              renderer: (props) => {
+                const { elementRef, ...restProps } = props;
+                delete restProps.style;
+                return <span 
+                  {...restProps} 
+                  ref={elementRef} 
+                  className="scroll-thumb"
+                />;
+              },
             }}
             noScrollX="true"
           >
@@ -150,6 +167,7 @@ export const AppContent = () => {
             </StrictMode>
           </Scrollbar>
         </div>
+        <Menu />
       </>
     );
   }

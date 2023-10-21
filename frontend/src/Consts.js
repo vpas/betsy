@@ -7,8 +7,8 @@ export const TASK_STATES = {
 };
 
 export const TASK_STATE_MESSAGES = {
-    [TASK_STATES.ACCEPT_BETS]: "Accepting bets",
-    [TASK_STATES.BETS_FINALIZED]: "Ready to start",
+    [TASK_STATES.ACCEPT_BETS]: "Waiting for bets",
+    [TASK_STATES.BETS_FINALIZED]: "Bets accepted",
     [TASK_STATES.IN_PROGRESS]: "In progress",
     [TASK_STATES.DONE]: 'Finished',
     [TASK_STATES.ABANDONED]: 'Abandoned',

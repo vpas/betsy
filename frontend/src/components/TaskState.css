@@ -1,0 +1,57 @@
+.task-state {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+}
+
+.task-state .state-text {
+  color: #F0A25A;
+  text-align: center;
+  font-family: Poppins;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.task-state .state-icon-lock {
+  width: 20px;
+  height: 20px;
+  position: relative;
+  left: 4px;
+}
+
+.state-accept_bets .state-text {
+  color: #F0A25A;
+}
+.state-accept_bets .state-icon-lock {
+  display: none;
+}
+
+.state-bets_finalized .state-text {
+  color: #5EDD91;
+}
+.state-bets_finalized .state-icon-lock path {
+  fill: #5EDD91;
+}
+
+.state-in_progress .state-text {
+  color: #36D3CA;
+}
+.state-accept_bets .state-icon-lock {
+  color: #F0A25A;
+}
+
+.state-done .state-text {
+  color: #5EDD91;
+}
+.state-accept_bets .state-icon-lock {
+  color: #F0A25A;
+}
+
+.state-abandoned .state-text {
+  color: #DD665E;
+}
+.state-accept_bets .state-icon-lock {
+  color: #F0A25A;
+}

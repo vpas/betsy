@@ -1,34 +1,37 @@
-:root {
-    --menu-button-color: rgba(255, 255, 255, 0.2);
-    --menu-button-active-color: rgba(255, 255, 255, 0.6);
-}
-
 .menu-button {
-    width: 48px;
-    height: 82px;
-    margin-top: 4px;
-    margin-left: 22px;
-    margin-right: 22px;
+  width: 48px;
+  height: 62px;
+  padding-left: 22px;
+  padding-right: 22px;
+  opacity: 0.4;
+
+  position: relative;
+  top: 5px;
 }
 
-.menu-button .text {
-    -webkit-text-fill-color: var(--menu-button-color);
-    position: absolute;
-    top: 47px;
-    text-align: center;
-    width: 48px;
-    
+.menu-button.active {
+  opacity: 1;
 }
 
 .menu-button .icon {
-    position: absolute;
-    top: 0px;
-    stroke-opacity: 0.2;
+  position: absolute;
+  top: 0px;
+  stroke-opacity: 1;
+  width: 48px;
+  height: 48px;
 }
 
-.menu-button.active .text {
-    -webkit-text-fill-color: var(--menu-button-active-color);
-}
-.menu-button.active .icon {
-    stroke-opacity: 0.6;
+.menu-button .text {
+  position: absolute;
+  top: 43px;
+  text-align: center;
+  width: 48px;
+
+  color: #FFF;
+  text-align: center;
+  font-family: Poppins;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 }
