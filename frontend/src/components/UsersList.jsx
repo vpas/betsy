@@ -15,7 +15,7 @@ export const UsersList = ({users, className}) => {
                             backgroundColor: u.color
                         }}
                     />
-                    <div className="username">{u.username}</div>
+                    <div className="username">{"- " + u.username}</div>
                 </div>
             )}    
         </div>

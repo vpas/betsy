@@ -12,9 +12,10 @@ import LoadingBlock from "components/LoadingBlock";
 import Slider from "components/Slider";
 import Stars from "components/Stars";
 import UsersList from "components/UsersList";
+import PopUp from "components/PopUp";
 import AppContext from "AppContext";
 import { hoursToDaysAndHours, newTask, newBet, calcWinPayout } from "Utils"
-import { TASK_STATES, USER_COLORS } from "Consts";
+import { DESCRIPTION_MAX_LENGTH, TASK_STATES, TITLE_MAX_LENGTH, USER_COLORS } from "Consts";
 
 import "./CreateEditTask.css";
 
@@ -22,7 +23,8 @@ export const CreateEditTask = () => {
   const context = useContext(AppContext);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+  const [isLockPopUpVisible, setIsLockPopUpVisible] = useState(false);
+
   let inputTask = context.inputTask;
   let inputBet = context.inputBet;
 
@@ -89,7 +91,7 @@ export const CreateEditTask = () => {
         created_by: bet.created_by,
       },
     }));
-    
+
     onBackButton({ shouldRefetch: true })
   }
 
@@ -135,11 +137,11 @@ export const CreateEditTask = () => {
     }));
     updateTask(t => {
       // console.log(`updateTask. newState: ${newState}`)
-      t.task_state = newState; 
+      t.task_state = newState;
     });
   }
 
-  async function onDeleteTask() {
+  async function onAbandonTask() {
     await changeTaskState({ newState: TASK_STATES.ABANDONED });
     onBackButton({ shouldRefetch: true });
   }
@@ -160,7 +162,7 @@ export const CreateEditTask = () => {
   }
 
   // function onDeleteBet() {
-    // not implemented
+  // not implemented
   // }
 
   const canEditTask = task.task_state === TASK_STATES.ACCEPT_BETS && task.created_by === context.user.id;
@@ -173,7 +175,12 @@ export const CreateEditTask = () => {
   if (areCreatingTask) {
     title = "Create task";
     Buttons = () => (
-      <Button text="CREATE" className="create-button" onClick={() => onCreateTaskAndBet()} />
+      <Button 
+        text="CREATE" 
+        className="create-button" 
+        onClick={() => onCreateTaskAndBet()} 
+        disabled={task.title.length === 0}
+      />
     )
   } else if (task.created_by === context.userId) {
     title = "Edit task";
@@ -181,8 +188,8 @@ export const CreateEditTask = () => {
       Buttons = () => (
         <>
           <Button text="SAVE" className="save-button" onClick={() => onSaveTaskAndBet()} />
-          <Button text="LOCK" className="lock-bets-button" onClick={() => onLockBets()} />
-          <Button text="DELETE" className="delete-button" onClick={() => onDeleteTask()} />
+          <Button text="LOCK" className="lock-bets-button secondary-action" onClick={() => setIsLockPopUpVisible(true)} />
+          <Button text="ABANDON" className="abandon-button secondary-action" onClick={() => onAbandonTask()} />
         </>
       )
       task.bets.forEach(b => {
@@ -196,14 +203,14 @@ export const CreateEditTask = () => {
       Buttons = () => (
         <>
           <Button text="START" className="start-button" onClick={() => onStart()} />
-          <Button text="DELETE" className="delete-button" onClick={() => onDeleteTask()} />
+          <Button text="ABANDON" className="abandon-button secondary-action" onClick={() => onAbandonTask()} />
         </>
       )
     } else if (task.task_state === TASK_STATES.IN_PROGRESS) {
       Buttons = () => (
         <>
-          <Button text="FINISHED" className="finished-button" onClick={() => onFinished()} />
-          <Button text="DELETE" className="delete-button" onClick={() => onDeleteTask()} />
+          <Button text="FINISH" className="finished-button" onClick={() => onFinished()} />
+          <Button text="ABANDON" className="abandon-button secondary-action" onClick={() => onAbandonTask()} />
         </>
       )
     } else {
@@ -233,6 +240,9 @@ export const CreateEditTask = () => {
       Buttons = () => (<></>)
     }
   }
+  const ButtonsBlock = () => <div className="buttons">
+    <Buttons/>
+  </div>
 
   const otherBets = []
   if (task.created_by === context.userId) {
@@ -255,31 +265,46 @@ export const CreateEditTask = () => {
     return (
       <div className="screen task-editor">
         <BackButton onClick={onBackButton} />
-        <div 
+        <div
           className="screen-title h2 create-edit-label">
-            {title}
+          {title}
         </div>
-        <TaskState state={task.task_state} className="task-state"/>
+        {!areCreatingTask &&
+          <TaskState state={task.task_state} className="task-state" />
+        }
         <div className="input-wrapper title-wrapper">
-          <input
-            className="input title"
+          <textarea
+            className="input title h4"
             id="title"
-            type="text"
             placeholder="Title"
             value={task.title}
             disabled={!canEditTask}
-            onChange={e => updateTask(t => { t.title = e.target.value; })}
+            onChange={e => {
+              if (e.target.value.length <= TITLE_MAX_LENGTH) {
+                updateTask(t => { t.title = e.target.value; })
+              }
+            }}
           />
+        </div>
+        <div className="input-len-limit body1">
+          {`${task.title.length}/${TITLE_MAX_LENGTH} symbols`}
         </div>
         <div className="input-wrapper description-wrapper">
           <textarea
-            className="input description"
+            className="input description body1"
             id="description"
             placeholder="Description"
             value={task.description}
             disabled={!canEditTask}
-            onChange={e => updateTask(t => { t.description = e.target.value; })}
+            onChange={e => {
+              if (e.target.value.length <= DESCRIPTION_MAX_LENGTH) {
+                updateTask(t => { t.description = e.target.value; })
+              }
+            }}
           />
+        </div>
+        <div className="input-len-limit body1">
+          {`${task.description.length}/${DESCRIPTION_MAX_LENGTH} symbols`}
         </div>
         <Slider
           className="term-hours"
@@ -304,21 +329,32 @@ export const CreateEditTask = () => {
           otherValuesWithColor={otherBets.map(b => { return { value: b.bet_amount, color: b.color } })}
           onChange={v => updateBet(b => { b.bet_amount = v; })}
         />
-        <UsersList
-          className="bets-legend"
-          users={otherBets.map(b => { return { username: b.owner.username, color: b.color } })}
-        />
-        <div className="win-payout">
-          <div className="win-payout-text">Win payout</div>
-          <Stars
-            className="win-payout-amout"
-            value={calcWinPayout({ task, bet })}
-            formatAsEarning={true}
+        {otherBets.length > 0 && <>
+          <UsersList
+            className="bets-legend"
+            users={otherBets.map(b => { return { username: b.owner.username, color: b.color } })}
           />
-        </div>
+          <div className="win-payout">
+            <div className="win-payout-text h3">Your payout</div>
+            <Stars
+              className="win-payout-amout"
+              value={calcWinPayout({ task, bet })}
+              formatAsEarning={true}
+            />
+          </div>
+        </>}
         <label className="error">{error}</label>
-        <Buttons />
+        <ButtonsBlock />
         <div className="footer" />
+        <PopUp
+          message="Are you sure you want to lock the task? You will not be able to edit the task and can’t undo this action."
+          isVisible={isLockPopUpVisible}
+          onOk={() => {
+            setIsLockPopUpVisible(false);
+            onLockBets();
+          }}
+          onBack={() => { setIsLockPopUpVisible(false) }}
+        />
       </div>
     )
   }

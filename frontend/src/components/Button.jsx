@@ -9,7 +9,7 @@ export const Button = ({ text, className, onClick, style, disabled = false }) =>
       onClick={disabled ? null : onClick}
       style={style}
     >
-      <div className={"button" + disabledClass}>{text}</div>
+      <div className={"button h2" + disabledClass}>{text}</div>
     </div>
   );
 };

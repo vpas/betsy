@@ -1,34 +1,26 @@
+.stars {
+  display: flex;
+  flex-direction: row;
+}
 .stars .amount {
     color: #FFF;
-    text-align: right;
-    font-family: Poppins;
-    font-size: 36px;
-    font-style: normal;
-    font-weight: 600;
-    text-wrap: nowrap;
-    line-height: normal;
-    
-    opacity: 0.9;
-    width: 70px;
-    height: 30px;
-    position: absolute;
-    right: 36px;
-    top: 4px;
+    opacity: 1;
     margin: 0;
+    line-height: 30px;
+    /* height: 30px; */
 }
 
 .stars .amount.positive {
-    color: green;
+    /* color: green; */
 }
 
 .stars .amount.negative {
-    color: red;
+    /* color: red; */
 }
 
 .stars .icon-star {
-    height: 32px;
-    right: 0px;
-    position: absolute;
-    top: 15px;
-    width: 32px;
+    height: 28px;
+    width: 28px;
+    position: relative;
+    margin-left: 4px;
 }

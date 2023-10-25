@@ -38,20 +38,20 @@
 .state-in_progress .state-text {
   color: #36D3CA;
 }
-.state-accept_bets .state-icon-lock {
-  color: #F0A25A;
+.state-in_progress .state-icon-lock path {
+  fill: #36D3CA;
 }
 
 .state-done .state-text {
   color: #5EDD91;
 }
-.state-accept_bets .state-icon-lock {
-  color: #F0A25A;
+.state-done .state-icon-lock {
+  display: none;
 }
 
 .state-abandoned .state-text {
   color: #DD665E;
 }
-.state-accept_bets .state-icon-lock {
-  color: #F0A25A;
+.state-abandoned .state-icon-lock {
+  display: none;
 }

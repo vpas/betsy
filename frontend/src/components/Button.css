@@ -3,27 +3,19 @@
   background-color: #36D3CA;
   border-radius: 12px;
   display: inline-flex;
-  gap: 8px;
   justify-content: center;
   overflow: hidden;
-  padding: 16px 0px;
   position: relative;
   cursor: pointer;
   width: 255px;
   height: 52px;
+  padding: 0px;
 }
 
 .button-wrapper .button {
   position: relative;
 
-  color: #FFF;
-  text-align: center;
-  font-family: Poppins;
-  font-size: 22px;
-  font-style: normal;
-  font-weight: 600;
-  line-height: normal;
-  text-transform: uppercase;
+  color: #000000;
 }
 
 .button-wrapper.disabled {
@@ -32,4 +24,16 @@
   opacity: 0.2;
 }
 
-.button-wrapper .button.disabled {}
+.button-wrapper .button.disabled {
+  color: white;
+}
+
+.button-wrapper.secondary-action {
+  color: white;
+  border: 1px solid var(--gradient-blue-yellow, #36D3CA);
+  background-color: #00000000;
+}
+
+.button-wrapper.secondary-action .button{
+  color: white;
+}

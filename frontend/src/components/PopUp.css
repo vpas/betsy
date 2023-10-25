@@ -1,0 +1,58 @@
+.pop-up-wrapper {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 1000px;
+  /* filter: blur(1px); */
+  background: rgba(0, 0, 0, 0.21);
+  backdrop-filter: blur(5.5px);
+  display: flex;
+  justify-content: center;
+}
+
+.pop-up-wrapper.pop-up-hidden {
+  display: none;
+}
+
+.pop-up-wrapper .pop-up-window {
+  position: absolute;
+  top: 310px;
+  width: 335px;
+  height: 220px;
+
+  border-radius: 12px;
+  background: #1A1C1C;
+}
+
+.pop-up-window .pop-up-message {
+  position: relative;
+  margin-top: 40px;
+  margin-left: 20px;
+  margin-right: 20px;
+  height: 64px;
+  
+  color: white;
+}
+
+.pop-up-window .pop-up-buttons {
+  position: relative;
+  margin-top: 24px;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.pop-up-window .button-ok {
+  position: absolute;
+  transform: none;
+  width: 134px;
+  left: 0px;
+}
+
+.pop-up-window .button-back {
+  position: absolute;
+  transform: none;
+  width: 134px;
+  right: 0px;
+  left: unset;
+}

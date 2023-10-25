@@ -77,7 +77,7 @@ export function newTask({user}) {
     return {
         created_by: user.id,
         title: "",
-        desciption: "",
+        description: "",
         task_state: "accept_bets",
         bets: [],
     };

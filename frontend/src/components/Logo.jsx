@@ -6,10 +6,7 @@ import "./Logo.css";
 export const Logo = () => {
     return (
         <div className="logo-wrapper">
-            <div className="logo">
-                betsy
-            </div>
-            {/* <img className="logo" alt="Icon logo" src={logo_svg} /> */}
+            <img className="logo" alt="Icon logo" src={logo_svg} />
         </div>
     );
 };

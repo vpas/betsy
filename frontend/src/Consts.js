@@ -35,3 +35,6 @@ export const USER_COLORS = [
     "#F0A25A",
     "red",
 ]
+
+export const TITLE_MAX_LENGTH = 35;
+export const DESCRIPTION_MAX_LENGTH = 225;

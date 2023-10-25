@@ -7,22 +7,22 @@
 .users-list .user-card {
     position: relative;
     width: 120px;
-    height: 24px;
+    height: 16px;
 }
 
 .user-card .username {
     position: absolute;
-    left: 24px;
+    left: 14px;
     width: 100px;
     color: white;
-    opacity: 0.9;
+    opacity: 0.4;
     text-align: left;
 }
 
 .user-card .color {
     position: absolute;
-    top: 4px;
-    width: 16px;
-    height: 16px;
-    border-radius: 8px;
+    top: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 4px;
 }
