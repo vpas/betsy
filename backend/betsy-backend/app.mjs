@@ -21,6 +21,7 @@ export const TASK_STATES = {
   BETS_FINALIZED: 'bets_finalized',
   IN_PROGRESS: 'in_progress',
   DONE: 'done',
+  DONE_OVERTIME: 'done_overtime',
   ABANDONED: 'abandoned',
 };
 
@@ -413,7 +414,7 @@ function calcFinalPayout({ bets, wasFinishedInTime }) {
         if (wasFinishedInTime) {
           b.final_payout = -b.bet_amount;
         } else {
-          b.final_payout = ownerBet.bet_amount * (b.bet_amount / totalAgainst);
+          b.final_payout = Math.ceil(ownerBet.bet_amount * (b.bet_amount / totalAgainst));
         }
       } else {
         b.final_payout = 0;
@@ -496,9 +497,13 @@ async function setTaskState(id, newState) {
   } else if (newState === TASK_STATES.DONE) {
     const task = await getTask(id);
     const ownerBet = getTaskOwnerBet(await getAllTaskBets(id));
+    const wasFinishedInTime = hoursSince(new Date(task.started_at)) <= ownerBet.term_hours;
+    if (!wasFinishedInTime) {
+      input.TransactItems[0].Update.ExpressionAttributeValues[":task_state"]["S"] = TASK_STATES.DONE_OVERTIME;
+    }
     await onTaskClosed({
       id: id,
-      wasFinishedInTime: hoursSince(new Date(task.started_at)) <= ownerBet.term_hours,
+      wasFinishedInTime: wasFinishedInTime,
       ownerBonus: ownerBet.term_hours,
       input: input,
     });

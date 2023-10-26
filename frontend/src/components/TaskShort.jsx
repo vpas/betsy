@@ -8,12 +8,18 @@ import star_svg from "./star.svg"
 import TaskState from "components/TaskState";
 
 import "./TaskShort.css";
+import { TASK_STATES } from "Consts";
 
 export const TaskShort = ({ task, onClick = () => { } }) => {
   const context = useContext(AppContext);
   const ourBet = task.bets.find(b => b.created_by === context.userId);
   const isOurs = task.created_by === context.userId;
-  // const hasBonus = isOurs && task.task_state === TASK_STATES.DONE;
+  const hasBonus = (
+    isOurs && (
+      task.task_state === TASK_STATES.DONE ||
+      task.task_state === TASK_STATES.DONE_OVERTIME
+    )
+  );
 
   const bet = ourBet ? ourBet : task.owner_bet;
 
@@ -26,23 +32,6 @@ export const TaskShort = ({ task, onClick = () => { } }) => {
     starsValue = bet.bet_amount;
     // formatAsEarning = false;
   }
-
-  // function Bonus() {
-  //   if (hasBonus) {
-  //     return (
-  //       <div className="completion-bonus">
-  //         <div className="completion-bonus-text">bonus</div>
-  //         <Stars
-  //           className="completion-bonus-stars"
-  //           value={ourBet.term_hours}
-  //           formatAsEarning={true}
-  //         />
-  //       </div>
-  //     )
-  //   } else {
-  //     return <></>
-  //   }
-  // }
 
   return (
     <div className="task-short" onClick={() => onClick({ task: task, bet: ourBet })}>
@@ -59,8 +48,13 @@ export const TaskShort = ({ task, onClick = () => { } }) => {
       >
         {task.owner.username}
       </div>
-      
-      {/* <Bonus /> */}
+      {hasBonus &&
+        <div id="completion-bonus">
+          <div id="completion-bonus-text" className="body2">Time bonus</div>
+          <div id="completion-bonus-amount" className="body2">+{ourBet.term_hours}</div>
+          <img id="completion-bonus-icon-star" alt="Icon star" src={star_svg} />
+        </div>
+      }
     </div>
   );
 };

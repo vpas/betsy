@@ -3,6 +3,7 @@ export const TASK_STATES = {
     BETS_FINALIZED: 'bets_finalized',
     IN_PROGRESS: 'in_progress',
     DONE: 'done',
+    DONE_OVERTIME: 'done_overtime',
     ABANDONED: 'abandoned',
 };
 
@@ -10,7 +11,8 @@ export const TASK_STATE_MESSAGES = {
     [TASK_STATES.ACCEPT_BETS]: "Waiting for bets",
     [TASK_STATES.BETS_FINALIZED]: "Bets accepted",
     [TASK_STATES.IN_PROGRESS]: "In progress",
-    [TASK_STATES.DONE]: 'Finished',
+    [TASK_STATES.DONE]: 'Done',
+    [TASK_STATES.DONE_OVERTIME]: 'Done overtime',
     [TASK_STATES.ABANDONED]: 'Abandoned',
 }
 

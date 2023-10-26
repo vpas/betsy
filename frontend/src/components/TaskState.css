@@ -49,6 +49,13 @@
   display: none;
 }
 
+.state-done_overtime .state-text {
+  color: #DD665E;
+}
+.state-done_overtime .state-icon-lock {
+  display: none;
+}
+
 .state-abandoned .state-text {
   color: #DD665E;
 }

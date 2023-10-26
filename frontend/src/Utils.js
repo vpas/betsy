@@ -47,7 +47,7 @@ export function calcWinPayouts(task) {
       if (b.id === task.owner_bet.id) {
         b.win_payout = totalAgainst;
       } else if (isActive(b)) {
-        b.win_payout = total * (b.bet_amount / totalAgainst);
+        b.win_payout = Math.ceil(total * (b.bet_amount / totalAgainst));
         b.win_payout -= b.bet_amount;
       } else {
         b.win_payout = 0;

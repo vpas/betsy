@@ -25,7 +25,7 @@ export const Explore = () => {
         <div className="screen explore">
             <Logo />
             <RefreshButton />
-            <div className="section-title tasks-accepting-bets">TASKS ACCEPTING BETS</div>
+            <div className="section-title tasks-accepting-bets">all bets</div>
             <div className="list-wrapper">
                 <TasksList tasks={tasksAcceptingBets} />
             </div>

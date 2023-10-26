@@ -1,11 +1,22 @@
+.bets {
+  display: flex;
+  flex-direction: column;
+}
+
+.bets .logo-wrapper {
+  position: relative;
+  margin-top: 32px;
+}
+
 .bets .your-bets {
-    position: absolute;
-    top: 146px;
+  position: relative;
+  margin-top: 18px;
 }
 
 .bets .list-wrapper {
-    position: absolute;
-    top: 174px;
-    width: 335px;
-    left: 20px
+  position: relative;
+  margin-top: 16px;
+  margin-bottom: 80px;
+  width: 335px;
+  left: 20px
 }

@@ -1,37 +1,50 @@
 .history {
+  display: flex;
+  flex-direction: column;
+}
 
+.history .logo-wrapper {
+  position: relative;
+  margin-top: 32px;
+}
+
+.history #history-tabs {
+  position: relative;
+  margin-top: 26px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 23px;
 }
 
 .history .tab {
-    position: absolute;
-    top: 126px;
-
-    color: #FFF;
-    font-family: Poppins;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    opacity: 0.5;
+  position: relative;
+  width: 122px;
+  height: 40px;
+  border-radius: 12px;
+  color: white;
+  opacity: 0.4;
+  text-align: center;
+  line-height: 40px;
+  border: 1px solid #ffffff00;
 }
 
 .history .tab.tasks {
-    left: 126px;
-    text-align: left;
 }
 
 .history .tab.bets {
-    right: 126px;
-    text-align: right;
 }
 
 .history .tab.active {
-    opacity: 0.9;
+  border: 1px solid var(--main-white-100, #FFF);
+  opacity: 1;
 }
 
 .history .list-wrapper {
-    position: absolute;
-    top: 174px;
-    width: 335px;
-    left: 20px
+  position: relative;
+  margin-top: 24px;
+  margin-bottom: 80px;
+  width: 335px;
+  left: 20px
 }
