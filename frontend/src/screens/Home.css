@@ -1,34 +1,40 @@
+.home {
+  display: flex;
+  flex-direction: column;
+}
+
 .home .logo-wrapper {
-  top: 80px;
+  position: relative;
+  margin-top: 32px;
 }
 
 .home .user-info {
-    position: absolute;
-    top: 110px;
-    left: 50%;
-    transform: translateX(-50%);
+  position: relative;
+  margin-top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .home .section-title.your-task {
-    position: absolute;
-    top: 146px;
+  position: relative;
+  margin-top: 40px;
 }
 
 .home .task-block-wrapper {
-    position: absolute;
-    top: 174px;
-    left: 20px;
-    width: 100%;
+  position: relative;
+  margin-top: 16px;
+  left: 20px;
+  display: flex;
 }
 
 .home .section-title.your-bets {
-    position: absolute;
-    top: 414px;
+  position: relative;
+  margin-top: 64px;
 }
 
 .home .your-bets-list {
-    position: absolute;
-    top: 442px;
-    width: 335px;
-    left: 20px
+  position: relative;
+  margin-top: 16px;
+  width: 335px;
+  left: 20px
 }

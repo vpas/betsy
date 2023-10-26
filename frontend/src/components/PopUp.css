@@ -42,14 +42,19 @@
   margin-right: 20px;
 }
 
-.pop-up-window .button-ok {
+.pop-up-window .pop-up-button.button-wrapper {
+  transform: none;
+  left: unset;
+}         
+
+.pop-up-window .pop-up-button.button-wrapper.button-ok {
   position: absolute;
   transform: none;
   width: 134px;
   left: 0px;
 }
 
-.pop-up-window .button-back {
+.pop-up-window .pop-up-button.button-wrapper.button-back {
   position: absolute;
   transform: none;
   width: 134px;

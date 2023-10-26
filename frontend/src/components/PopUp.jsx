@@ -12,12 +12,12 @@ export const PopUp = ({ message, onOk, onBack, isVisible }) => {
         <div className="pop-up-buttons">
           <Button
             text="OK"
-            className="button-ok"
+            className="pop-up-button button-ok"
             onClick={onOk}
           />
           <Button
             text="BACK"
-            className="button-back secondary-action"
+            className="pop-up-button button-back secondary-action"
             onClick={onBack}
           />
         </div>

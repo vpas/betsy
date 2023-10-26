@@ -5,7 +5,6 @@ import {
 import { useCookies } from 'react-cookie';
 
 import AppContext from "AppContext";
-import Logo from "components/Logo"
 import Button from "components/Button"
 import UserInfo from "components/UserInfo"
 import BackButton from "components/BackButton"
@@ -30,13 +29,14 @@ export const Profile = () => {
         context.updateContext(c => {
             c.userId = null;
             c.user = null;
+            c.activeScreenId = Home.name;
+            c.activeTabId = Home.name;
         });
     }
 
     if (user) {
         return (
             <div className="profile">
-                <Logo/>
                 <BackButton onClick={onBackButton}/>
                 <UserInfo className="user-info"/>
                 <label className="email">{user.email}</label>

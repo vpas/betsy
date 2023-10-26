@@ -6,11 +6,14 @@ import { TASK_STATE_MESSAGES } from "Consts"
 
 import "./TaskState.css";
 
-export const TaskState = ({state, className}) => {
+export const TaskState = ({state, className, id}) => {
   const stateMsg = TASK_STATE_MESSAGES[state];
   className += " state-" + state;
   return (
-      <div className={"task-state " + className}>
+      <div 
+        className={"task-state " + className}
+        id={id}
+      >
           <div className="state-text">{stateMsg}</div>
           <IconLockSvg className="state-icon-lock"/>
       </div>

@@ -18,6 +18,7 @@ import { hoursToDaysAndHours, newTask, newBet, calcWinPayout } from "Utils"
 import { DESCRIPTION_MAX_LENGTH, TASK_STATES, TITLE_MAX_LENGTH, USER_COLORS } from "Consts";
 
 import "./CreateEditTask.css";
+import TaskLong from "components/TaskLong";
 
 export const CreateEditTask = () => {
   const context = useContext(AppContext);
@@ -171,19 +172,24 @@ export const CreateEditTask = () => {
   let Buttons = null;
   let minTermHours = null;
   let maxTermHours = null;
+  let showTaskState = false;
+  let TaskBlock = null;
 
   if (areCreatingTask) {
     title = "Create task";
     Buttons = () => (
-      <Button 
-        text="CREATE" 
-        className="create-button" 
-        onClick={() => onCreateTaskAndBet()} 
+      <Button
+        text="CREATE"
+        className="create-button"
+        onClick={() => onCreateTaskAndBet()}
         disabled={task.title.length === 0}
       />
     )
+    TaskBlock = EditTaskBlock;
   } else if (task.created_by === context.userId) {
     title = "Edit task";
+    showTaskState = true;
+    TaskBlock = EditTaskBlock;
     if (task.task_state === TASK_STATES.ACCEPT_BETS) {
       Buttons = () => (
         <>
@@ -218,6 +224,11 @@ export const CreateEditTask = () => {
       Buttons = () => (<></>)
     }
   } else {
+    TaskBlock = () => <TaskLong
+      id="bet-task-long"
+      task={task}
+      bet={task.owner_bet}
+    />
     if (task.task_state === TASK_STATES.ACCEPT_BETS) {
       maxTermHours = task.owner_bet.term_hours;
       if (areCreatingBet) {
@@ -241,7 +252,7 @@ export const CreateEditTask = () => {
     }
   }
   const ButtonsBlock = () => <div className="buttons">
-    <Buttons/>
+    <Buttons />
   </div>
 
   const otherBets = []
@@ -259,6 +270,45 @@ export const CreateEditTask = () => {
     })
   }
 
+  function EditTaskBlock() {
+    return <>
+      <div className="input-wrapper title-wrapper">
+        <textarea
+          className="input title h4"
+          id="title"
+          placeholder="Title"
+          value={task.title}
+          disabled={!canEditTask}
+          onChange={e => {
+            if (e.target.value.length <= TITLE_MAX_LENGTH) {
+              updateTask(t => { t.title = e.target.value; })
+            }
+          }}
+        />
+      </div>
+      <div className="input-len-limit body1">
+        {`${task.title.length}/${TITLE_MAX_LENGTH} symbols`}
+      </div>
+      <div className="input-wrapper description-wrapper">
+        <textarea
+          className="input description body1"
+          id="description"
+          placeholder="Description"
+          value={task.description}
+          disabled={!canEditTask}
+          onChange={e => {
+            if (e.target.value.length <= DESCRIPTION_MAX_LENGTH) {
+              updateTask(t => { t.description = e.target.value; })
+            }
+          }}
+        />
+      </div>
+      <div className="input-len-limit body1">
+        {`${task.description.length}/${DESCRIPTION_MAX_LENGTH} symbols`}
+      </div>
+    </>
+  }
+
   if (loading) {
     return <LoadingBlock />
   } else {
@@ -269,46 +319,16 @@ export const CreateEditTask = () => {
           className="screen-title h2 create-edit-label">
           {title}
         </div>
-        {!areCreatingTask &&
-          <TaskState state={task.task_state} className="task-state" />
+        {showTaskState &&
+          <TaskState 
+            state={task.task_state} 
+            id="task-editor-task-state" 
+          />
         }
-        <div className="input-wrapper title-wrapper">
-          <textarea
-            className="input title h4"
-            id="title"
-            placeholder="Title"
-            value={task.title}
-            disabled={!canEditTask}
-            onChange={e => {
-              if (e.target.value.length <= TITLE_MAX_LENGTH) {
-                updateTask(t => { t.title = e.target.value; })
-              }
-            }}
-          />
-        </div>
-        <div className="input-len-limit body1">
-          {`${task.title.length}/${TITLE_MAX_LENGTH} symbols`}
-        </div>
-        <div className="input-wrapper description-wrapper">
-          <textarea
-            className="input description body1"
-            id="description"
-            placeholder="Description"
-            value={task.description}
-            disabled={!canEditTask}
-            onChange={e => {
-              if (e.target.value.length <= DESCRIPTION_MAX_LENGTH) {
-                updateTask(t => { t.description = e.target.value; })
-              }
-            }}
-          />
-        </div>
-        <div className="input-len-limit body1">
-          {`${task.description.length}/${DESCRIPTION_MAX_LENGTH} symbols`}
-        </div>
+        <TaskBlock />
         <Slider
           className="term-hours"
-          label="HOURS"
+          label="TIME"
           min="0"
           max="72"
           minAvailable={minTermHours}

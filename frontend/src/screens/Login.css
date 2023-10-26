@@ -1,40 +1,48 @@
 .login .logo-wrapper {
-  top: 80px;
+  position: relative;
+  margin-top: 64px;
+}
+
+.login .login-form {
+  position: relative;
+  margin-top: 80px;
 }
 
 .login .login-text {
-    position: absolute;
-    top: 252px;
+  position: relative;
+  margin-top: 0px;
+  margin-left: 40px;
+  left: 0px
 }
+
 .login .email-wrapper {
-    top: 284px;
-    height: 48px;
+  position: relative;
+  margin-top: 16px;
+  height: 48px;
 }
+
 .login .password-wrapper {
-    top: 348px;
-    height: 48px;
+  position: relative;
+  margin-top: 16px;
+  height: 48px;
 }
+
 .login .error {
-    display: flex;
-    justify-content: center;
-    position: absolute;
-    color: #DD665E;
-    font-family: Poppins;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: normal;
-    text-align: center;
-    top: 420px;
-    height: 16px;
-    width: 100%;
+  position: relative;
+  margin-top: 24px;
+  height: 16px;
+  width: 100%;
+
+  display: flex;
+  justify-content: center;
+  color: #DD665E;
+  text-align: center;
 }
+
 .login .login-button {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 476px;
-    width: 201px;
-    height: 52px;
-    padding: 0px;
+  position: relative;
+  margin-top: 40px;
+  width: 255px;
+  height: 52px;
+  padding: 0px;
 }

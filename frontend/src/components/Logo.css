@@ -2,11 +2,13 @@
   left: 50%;
   position: absolute;
   transform: translateX(-50%);
+  height: 60px;
+  display: flex;
+  justify-content: center;
 }
 
 .logo {
-  width: fit-content;
-  color: hsla(177, 64%, 52%, 1);
+  /* color: hsla(177, 64%, 52%, 1);
   -webkit-text-fill-color: transparent;
   -moz-text-fill-color: transparent;
   background:
@@ -21,7 +23,5 @@
   font-size: 40px;
   font-style: normal;
   font-weight: 700;
-  line-height: normal;
-  width: 116px;
-  height: 60px;
+  line-height: normal; */
 }

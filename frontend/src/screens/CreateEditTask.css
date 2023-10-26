@@ -8,7 +8,7 @@
   margin-top: 82px;
 }
 
-.task-editor .task-state {
+.task-editor #task-editor-task-state {
   position: relative;
   margin-top: 12px;
 }
@@ -39,6 +39,12 @@
   text-align: right;
   color: white;
   opacity: 0.2;
+}
+
+.task-editor #bet-task-long {
+  position: relative;
+  margin-top: 34px;
+  margin-left: 20px;
 }
 
 .task-editor .term-hours {

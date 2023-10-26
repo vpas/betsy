@@ -1,102 +1,100 @@
 .task-long {
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.03);
-    height: 206px;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 335px;
+  position: relative;
+  width: 335px;
+  height: 192px;
+
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .task-long .title {
-    color: #FFF;
-    font-family: Poppins;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    opacity: 0.9;
-    text-align: left;
-    
-    height: 24px;
-    position: absolute;
-    left: 20px;
-    top: 16px;
-    width: 148px;
+  position: absolute;
+  left: 20px;
+  top: 16px;
+  width: 197px;
+  height: 40px;
+  
+  color: #FFF;
+  opacity: 0.9;
+  text-align: left;
+  text-wrap: wrap;
+  overflow-wrap: break-word;
 }
 
 .task-long .description {
-    color: #FFF;
-    font-family: Poppins;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: normal;
-    text-align: left;
-    opacity: 0.9;
-    position: absolute;
-    left: 20px;
-    top: 70px;
-    width: 295px;
-    height: 120px;
-    margin: 0;
-    resize: none;
-    background: none;
-    border: none;
-    pointer-events: none; 
+  position: absolute;
+  left: 20px;
+  top: 64px;
+  width: 295px;
+  height: 80px;
+  
+  color: #FFF;
+  opacity: 0.6;
+  text-align: left;
+  text-wrap: wrap;
+  overflow-wrap: break-word;
 }
 
-.task-long .bet-amount {
-    width: 60px;
-    height: 30px;
-    position: absolute;
-    right: 20px;
-    top: 0px;
-    margin: 0;
+.task-long .task-long-state {
+  position: absolute;
+  top: 160px;
+  left: 20px;
+  justify-content: left;
 }
 
-.task-long .status {
-    color: #FFF;
-    font-family: Poppins;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    text-align: left;
-    opacity: 0.4;
-    width: 200px;
-    height: 16px;
-    position: absolute;
-    top: 48px;
-    left: 20px;
+.task-long .time-left {
+  position: absolute;
+  right: 20px;
+  bottom: 16px;
+  height: 16px;
+  color: white;
 }
 
-.task-long .term {
-    color: #FFF;
-    font-family: Poppins;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    text-align: right;
-    opacity: 0.4;
-    width: 200px;
-    height: 16px;
-    position: absolute;
-    top: 48px;
-    right: 20px;
+#task-long-bet-amount {
+  position: absolute;
+  width: 50px;
+  height: 30px;
+  right: 52px;
+  top: 16px;
+  color: white;
+  line-height: 30px;
+  text-align: right;
+}
+
+#task-long-star-icon {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  right: 20px;
+  top: 16px;
+}
+
+/* .task-long .term {
+  color: #FFF;
+  font-family: Poppins;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-align: right;
+  opacity: 0.4;
+  width: 200px;
+  height: 16px;
+  position: absolute;
+  top: 48px;
+  right: 20px;
 }
 
 .task-long .win-payout-block {
-    position: absolute;
-    top: 60px;
-    right: 20px;
+  position: absolute;
+  top: 60px;
+  right: 20px;
 }
 
-/* .win-payout-block .win-payout-text{
+.win-payout-block .win-payout-text{
 
+}
+
+.win-payout-block .win-payout {
+  scale: 0.7;
 } */
-
-.win-payout-block .win-payout{
-    scale: 0.7;
-}

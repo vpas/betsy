@@ -20,6 +20,7 @@ function App() {
     ...defaultContext,
     userId: null,
     activeScreenId: Home.name,
+    activeTabId: Home.name,
     shouldRefetch: true,
     axios: axiosInstance,
   });

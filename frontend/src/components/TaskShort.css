@@ -1,86 +1,88 @@
 .task-short {
-    position: relative;
-    height: 88px;
-    width: 100%;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.03);
-    margin-bottom: 16px;
+  position: relative;
+  width: 335px;
+  height: 104px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .task-short .title {
-    position: absolute;
-    left: 20px;
-    top: 11px;
+  position: absolute;
+  width: 195px;
+  height: 40px;
+  left: 20px;
+  top: 16px;
 
-    color: #FFF;
-    font-family: Poppins;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    opacity: 0.9;
+  color: #FFF;
+  opacity: 1;
+  text-align: left;
+  text-wrap: wrap;
+  overflow-wrap: break-word;
 }
 
-.task-short .status {
-    position: absolute;
-    left: 20px;
-    top: 37px;
+.task-short .task-short-state {
+  position: absolute;
+  left: 20px;
+  top: 72px;
+  justify-content: left;
+}
 
-    color: #FFF;
-    font-family: Poppins;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    opacity: 0.4;
+#task-short-stars-value {
+  position: absolute;
+  width: 60px;
+  height: 30px;
+  right: 52px;
+  top: 16px;
+  color: white;
+  line-height: 30px;
+  text-align: right;
+}
+
+#task-short-star-icon {
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  right: 20px;
+  top: 16px;
 }
 
 .task-short .owner {
-    position: absolute;
-    left: 20px;
-    top: 57px;
+  position: absolute;
+  right: 20px;
+  bottom: 12px;
 
-    color: #FFF;
-    font-family: Poppins;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    opacity: 0.4;
+  color: #FFF;
+  opacity: 0.6;
+  text-align: right;
 }
 
-.task-short .stars-value {
-    width: 60px;
-    height: 30px;
-    position: absolute;
-    right: 20px;
-    top: 0px;
-    margin: 0;
-}
 
+/* 
 .task-short .completion-bonus {
-    width: 110px;
-    height: 30px;
-    position: absolute;
-    right: 20px;
-    top: 52px;
-    margin: 0;
+  width: 110px;
+  height: 30px;
+  position: absolute;
+  right: 20px;
+  top: 52px;
+  margin: 0;
 }
-.task-short .completion-bonus-text {
-    position: absolute;
-    left: 0px;
-    top: 4px;
 
-    color: #65c068;
-    font-family: Poppins;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-    opacity: 0.4;
+.task-short .completion-bonus-text {
+  position: absolute;
+  left: 0px;
+  top: 4px;
+
+  color: #65c068;
+  font-family: Poppins;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  opacity: 0.4;
 }
+
 .task-short .completion-bonus-stars {
-    position: absolute;
-    right: 0px;
-    scale: 0.5;
-}
+  position: absolute;
+  right: 0px;
+  scale: 0.5;
+} */

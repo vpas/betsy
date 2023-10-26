@@ -11,7 +11,7 @@ import "./MenuButton.css";
 
 export const MenuButton = ({id, icon}) => {
     const context = useContext(AppContext);
-    const isActive = context.activeScreenId === id;
+    const isActive = context.activeTabId === id;
     const buttonInfo = MENU_BUTTONS_INFO[id];
     return (
         <div 
@@ -19,7 +19,10 @@ export const MenuButton = ({id, icon}) => {
                 "menu-button", 
                 {active: isActive},
             )}
-            onClick={() => context.updateContext(c => { c.activeScreenId = id; })}
+            onClick={() => context.updateContext(c => { 
+              c.activeScreenId = id; 
+              c.activeTabId = id;
+            })}
         >
             <div className="text">{buttonInfo.text}</div>
             <buttonInfo.icon className="icon"/>

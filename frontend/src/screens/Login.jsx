@@ -36,12 +36,12 @@ export const Login = ({setUser}) => {
     return (
         <div className="screen login">
             <Logo/>
-            <form>
-                <div className="login-text section-title">LOG IN</div>
+            <form className="login-form">
+                <div className="login-text section-title h3">LOG IN</div>
                 <div className={"input-wrapper email-wrapper" + classError}>
                   <input 
                       type="email" 
-                      className="input email"
+                      className="input email body1"
                       value={email}
                       placeholder="Email"
                       onChange={e => setEmail(e.target.value)}
@@ -51,14 +51,14 @@ export const Login = ({setUser}) => {
                 <div className={"input-wrapper password-wrapper" + classError}>
                   <input 
                       type="password" 
-                      className="input password"
+                      className="input password body1"
                       value={password}
                       placeholder="Password"
                       onChange={e => setPassword(e.target.value)}
                       onKeyDown={onKeyDown}
                   />
                 </div>
-                <label className="error">{error}</label>
+                <label className="error body1">{error}</label>
                 <Button 
                     text="LOG IN" 
                     className="login-button"

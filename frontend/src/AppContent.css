@@ -30,6 +30,9 @@
   text-align: left;
 
   color: #FFF;
+  opacity: 0.6;
+
+  /* from h3 */
   font-family: Poppins;
   font-size: 14px;
   font-style: normal;
@@ -37,7 +40,6 @@
   line-height: normal;
   letter-spacing: 0.14px;
   text-transform: uppercase;
-  opacity: 0.6;
 }
 
 .screen-title {
