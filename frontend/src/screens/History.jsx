@@ -8,7 +8,7 @@ import Logo from "components/Logo"
 import TasksList from "components/TasksList";
 import RefreshButton from "components/RefreshButton";
 import AppContext from "AppContext";
-import { TASK_STATES_ACTIVE } from "Consts";
+import { ACTIONS, TASK_STATES_ACTIVE } from "Consts";
 
 import "./History.css";
 
@@ -30,14 +30,16 @@ export const History = () => {
       t.bets.some(b => b.created_by === context.userId));
 
   function ActiveList() {
+    let tasks = null;
     if (tab === TABS.TASKS) {
-      return <TasksList tasks={ourTasks} />
+      tasks = ourTasks;
     } else if (tab === TABS.BETS) {
-      return <TasksList tasks={tasksWithOurBets} />
+      tasks = tasksWithOurBets;
     } else {
       console.error(`Unkown tab name: ${tab}`);
       return <div>error</div>
     }
+    return <TasksList tasks={tasks} onClickAction={ACTIONS.VIEW}/>
   }
 
   return (

@@ -122,3 +122,11 @@ export function timeLeftStr(task) {
     return `${-hoursLeft}h ${-minLeft}m overtime`;
   }
 }
+
+export function formatEarning(earning) {
+  if (earning >= 0) {
+    return `+${earning}`
+  } else {
+    return earning
+  }
+}

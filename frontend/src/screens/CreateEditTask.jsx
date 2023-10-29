@@ -20,6 +20,52 @@ import { DESCRIPTION_MAX_LENGTH, TASK_STATES, TITLE_MAX_LENGTH, USER_COLORS } fr
 import "./CreateEditTask.css";
 import TaskLong from "components/TaskLong";
 
+const EditTaskBlock = ({ task, updateTask }) => {
+  const context = useContext(AppContext);
+  const canEditTask = task.task_state === TASK_STATES.ACCEPT_BETS && task.created_by === context.user.id;
+
+  function onTitleEdit(e) {
+    if (e.target.value.length <= TITLE_MAX_LENGTH) {
+      updateTask(t => { t.title = e.target.value; })
+    }
+  }
+
+  function onDescriptionEdit(e) {
+    if (e.target.value.length <= DESCRIPTION_MAX_LENGTH) {
+      updateTask(t => { t.description = e.target.value; })
+    }
+  }
+
+  return <>
+    <div className="input-wrapper title-wrapper">
+      <textarea
+        className="input title h4"
+        id="title"
+        placeholder="Title"
+        value={task.title}
+        disabled={!canEditTask}
+        onChange={onTitleEdit}
+      />
+    </div>
+    <div className="input-len-limit body1">
+      {`${task.title.length}/${TITLE_MAX_LENGTH} symbols`}
+    </div>
+    <div className="input-wrapper description-wrapper">
+      <textarea
+        className="input description body1"
+        id="description"
+        placeholder="Description"
+        value={task.description}
+        disabled={!canEditTask}
+        onChange={onDescriptionEdit}
+      />
+    </div>
+    <div className="input-len-limit body1">
+      {`${task.description.length}/${DESCRIPTION_MAX_LENGTH} symbols`}
+    </div>
+  </>
+}
+
 export const CreateEditTask = () => {
   const context = useContext(AppContext);
   const [loading, setLoading] = useState(false);
@@ -166,14 +212,13 @@ export const CreateEditTask = () => {
   // not implemented
   // }
 
-  const canEditTask = task.task_state === TASK_STATES.ACCEPT_BETS && task.created_by === context.user.id;
+  const isOurTask = task.created_by === context.userId;
   const canEditBet = task.task_state === TASK_STATES.ACCEPT_BETS && bet.created_by === context.user.id;
   let title = "";
   let Buttons = null;
   let minTermHours = null;
   let maxTermHours = null;
   let showTaskState = false;
-  let TaskBlock = null;
 
   if (areCreatingTask) {
     title = "Create task";
@@ -185,11 +230,9 @@ export const CreateEditTask = () => {
         disabled={task.title.length === 0}
       />
     )
-    TaskBlock = EditTaskBlock;
   } else if (task.created_by === context.userId) {
     title = "Edit task";
     showTaskState = true;
-    TaskBlock = EditTaskBlock;
     if (task.task_state === TASK_STATES.ACCEPT_BETS) {
       Buttons = () => (
         <>
@@ -224,11 +267,6 @@ export const CreateEditTask = () => {
       Buttons = () => (<></>)
     }
   } else {
-    TaskBlock = () => <TaskLong
-      id="bet-task-long"
-      task={task}
-      bet={task.owner_bet}
-    />
     if (task.task_state === TASK_STATES.ACCEPT_BETS) {
       maxTermHours = task.owner_bet.term_hours;
       if (areCreatingBet) {
@@ -270,45 +308,6 @@ export const CreateEditTask = () => {
     })
   }
 
-  function EditTaskBlock() {
-    return <>
-      <div className="input-wrapper title-wrapper">
-        <textarea
-          className="input title h4"
-          id="title"
-          placeholder="Title"
-          value={task.title}
-          disabled={!canEditTask}
-          onChange={e => {
-            if (e.target.value.length <= TITLE_MAX_LENGTH) {
-              updateTask(t => { t.title = e.target.value; })
-            }
-          }}
-        />
-      </div>
-      <div className="input-len-limit body1">
-        {`${task.title.length}/${TITLE_MAX_LENGTH} symbols`}
-      </div>
-      <div className="input-wrapper description-wrapper">
-        <textarea
-          className="input description body1"
-          id="description"
-          placeholder="Description"
-          value={task.description}
-          disabled={!canEditTask}
-          onChange={e => {
-            if (e.target.value.length <= DESCRIPTION_MAX_LENGTH) {
-              updateTask(t => { t.description = e.target.value; })
-            }
-          }}
-        />
-      </div>
-      <div className="input-len-limit body1">
-        {`${task.description.length}/${DESCRIPTION_MAX_LENGTH} symbols`}
-      </div>
-    </>
-  }
-
   if (loading) {
     return <LoadingBlock />
   } else {
@@ -320,12 +319,20 @@ export const CreateEditTask = () => {
           {title}
         </div>
         {showTaskState &&
-          <TaskState 
-            state={task.task_state} 
-            id="task-editor-task-state" 
+          <TaskState
+            state={task.task_state}
+            id="task-editor-task-state"
           />
         }
-        <TaskBlock />
+        {isOurTask && <EditTaskBlock
+          task={task}
+          updateTask={updateTask}
+        />}
+        {!isOurTask && <TaskLong
+          id="bet-task-long"
+          task={task}
+          bet={task.owner_bet}
+        />}
         <Slider
           className="term-hours"
           label="TIME"

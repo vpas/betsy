@@ -7,10 +7,10 @@ import { TASK_STATES } from "Consts";
 
 import "./TaskLong.css";
 
-export const TaskLong = ({ task, bet, onClick = () => {}, className, id }) => {
+export const TaskLong = ({ task, bet, onClick = () => { }, className, id }) => {
   return (
-    <div 
-      className={"task-long " + className} 
+    <div
+      className={"task-long " + className}
       onClick={() => onClick({ task, bet })}
       id={id}
     >
@@ -25,8 +25,11 @@ export const TaskLong = ({ task, bet, onClick = () => {}, className, id }) => {
         state={task.task_state}
         className="task-long-state"
       />
-      <div id="task-long-bet-amount" className="body3">{bet.bet_amount}</div>
-      <img id="task-long-star-icon" alt="Icon star" src={star_svg} />
+      {bet && <>
+        <div id="task-long-bet-amount" className="body3">{bet.bet_amount}</div>
+        <img id="task-long-star-icon" alt="Icon star" src={star_svg} />
+      </>
+      }
       {task.task_state === TASK_STATES.IN_PROGRESS &&
         <div className="time-left body2">
           {timeLeftStr(task)}

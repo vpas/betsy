@@ -1,0 +1,26 @@
+.task-info {
+  display: flex;
+  flex-direction: column;
+}
+
+#task-info-screen-title {
+  position: relative;
+  margin-top: 82px;
+}
+
+#task-info-task-long {
+  position: relative;
+  margin-top: 34px;
+  margin-left: 20px;
+}
+
+#task-info-task-bets-title {
+  position: relative;
+  margin-top: 64px;
+}
+
+#task-info-task-bets {
+  position: relative;
+  margin-top: 16px;
+  margin-left: 20px;
+}

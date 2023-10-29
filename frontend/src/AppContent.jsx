@@ -9,6 +9,7 @@ import Explore from 'screens/Explore';
 import History from 'screens/History';
 import Home from 'screens/Home';
 import Profile from 'screens/Profile';
+import TaskInfo from 'screens/TaskInfo';
 import Menu from 'components/menu/Menu';
 import LoadingBlock from "components/LoadingBlock"
 import ErrorBlock from "components/ErrorBlock"
@@ -24,6 +25,7 @@ const ALL_SCREENS = [
   History,
   Home,
   Profile,
+  TaskInfo,
 ];
 
 export const AppContent = () => {
