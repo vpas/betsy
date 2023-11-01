@@ -14,6 +14,10 @@ function App() {
     baseURL: 'https://vvp1a5v8v7.execute-api.eu-central-1.amazonaws.com/Prod/',
     timeout: 20000,
   });
+  // const axiosInstance = axios.create({
+  //   baseURL: 'http://localhost:3000',
+  //   timeout: 20000,
+  // });
   
   const defaultContext = useContext(AppContext);
   const [context, updateContext] = useImmer({

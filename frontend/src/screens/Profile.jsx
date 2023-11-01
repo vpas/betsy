@@ -1,6 +1,8 @@
 import {
     React,
     useContext,
+    useEffect,
+    useState,
 } from "react";
 import { useCookies } from 'react-cookie';
 
@@ -16,12 +18,33 @@ export const Profile = () => {
     const context = useContext(AppContext);
     const user = context.user;
     const [, setCookie] = useCookies(['user_id']);
+
+    let notificationBtnText = "";
+    if (context.isNotificationsSupported) {
+      if (context.isSubscribed) {
+        notificationBtnText = "Unsubscribe";
+      } else {
+        notificationBtnText = "Subscribe";
+      }
+    } else {
+      notificationBtnText = "Notifications not supported";
+    }
     
     function onBackButton({shouldRefetch = false}) {
         context.updateContext(c => { 
             c.activeScreenId = Home.name;
             c.shouldRefetch = shouldRefetch;
         });
+    }
+
+    async function toggleNotifications() {
+      if (context.isNotificationsSupported) {
+        if (context.isSubscribed) {
+          context.notificationsManager.unsubscribeUser();
+        } else {
+          context.notificationsManager.subscribeUser();
+        }
+      }
     }
 
     async function onLogout() {
@@ -40,6 +63,12 @@ export const Profile = () => {
                 <BackButton onClick={onBackButton}/>
                 <UserInfo className="user-info"/>
                 <label className="email">{user.email}</label>
+                <Button
+                  text={notificationBtnText}
+                  className="notifications-button"
+                  onClick={toggleNotifications}
+                  enabled={context.subscribeButtonEnabled}
+                />
                 <Button 
                     text="LOG OUT" 
                     className="logout-button"

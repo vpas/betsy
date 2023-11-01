@@ -15,6 +15,7 @@ import LoadingBlock from "components/LoadingBlock"
 import ErrorBlock from "components/ErrorBlock"
 import AppContext from "AppContext";
 import { calcWinPayouts } from "Utils";
+import { NotificationsManager } from "NotificationsManager"
 
 import './AppContent.css';
 
@@ -33,15 +34,8 @@ export const AppContent = () => {
   const [cookies, setCookie] = useCookies(['user_id']);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-
+  
   function setContextTasks({ users, tasks, bets }) {
-    // const tasks = tasks.map(
-    //   t => { return { ...t } }
-    // );
-    // const bets = bets.map(
-    //   b => { return { ...b } }
-    // );
-
     const usersById = {};
     users.forEach(u => usersById[u.id] = u);
 
@@ -91,6 +85,12 @@ export const AppContent = () => {
       setLoading(false);
     }
   }
+
+  
+
+  useEffect(() => {
+    new NotificationsManager(context).init();
+  }, []);
 
   useEffect(() => {
     if (context.userId === null && cookies.user_id) {
@@ -155,9 +155,9 @@ export const AppContent = () => {
               renderer: (props) => {
                 const { elementRef, ...restProps } = props;
                 delete restProps.style;
-                return <span 
-                  {...restProps} 
-                  ref={elementRef} 
+                return <span
+                  {...restProps}
+                  ref={elementRef}
                   className="scroll-thumb"
                 />;
               },

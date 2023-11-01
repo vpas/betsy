@@ -33,6 +33,11 @@ Resources:
           Properties:
             Path: /users/login
             Method: post
+        UserSubscription:
+          Type: Api
+          Properties:
+            Path: /users/{id}/sub
+            Method: post
     
   BetsyAPITasks:
     Type: AWS::Serverless::Function

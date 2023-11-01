@@ -1,29 +1,41 @@
+.profile {
+  display: flex;
+  flex-direction: column;
+}
+
 .profile .user-info {
-    position: absolute;
-    top: 150px;
-    left: 50%;
-    transform: translateX(-50%);
+  position: relative;
+  margin-top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .profile .email {
-    position: absolute;
-    top: 200px;
-    left: 50%;
-    transform: translateX(-50%);
+  position: relative;
+  margin-top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
 
-    color: #FFF;
-    font-family: Poppins;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    opacity: 0.9;
-    text-align: left;
+  color: #FFF;
+  font-family: Poppins;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  opacity: 0.9;
+  text-align: center;
+}
+
+.profile .notifications-button {
+  position: relative;
+  margin-top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .profile .logout-button {
-    position: absolute;
-    top: 600px;
-    left: 50%;
-    transform: translateX(-50%);
+  position: relative;
+  margin-top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
 }

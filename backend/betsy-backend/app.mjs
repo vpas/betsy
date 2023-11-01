@@ -7,12 +7,16 @@ import {
 } from "@aws-sdk/client-dynamodb";
 import { marshall, unmarshall } from "@aws-sdk/util-dynamodb"
 import { v4 as uuidv4 } from 'uuid';
+import webpush from 'web-push'
 
 const DEFAULT_HEADERS = {
-  "Access-Control-Allow-Headers" : "*",
+  "Access-Control-Allow-Headers": "*",
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "*",
 }
+
+const APPLICATION_SERVER_PUBLIC_KEY = 'BD6ZoPSDZZrIgJtvm165IwgWLg9aXSYy-LrCwP9yiQEJ9CaVL9K8HQtzHmbjzrWAGMeWMDqTgNDKwmy92i7T3FY';
+const APPLICATION_SERVER_PRIVATE_KEY = '5_w50ieO879qyCYuTkmjC_Gbb6u7ZWClSsy-LFB3ecc';
 
 const dbClient = new DynamoDBClient({ region: "eu-central-1" });
 
@@ -51,6 +55,15 @@ export async function getUser(id) {
   const response = await dbClient.send(command);
   const user = unmarshall(response.Item);
   return user;
+}
+
+export async function getAllUsers() {
+  const command = new ScanCommand({
+    TableName: "betsy_users",
+    ConsistentRead: true,
+  });
+  const response = await dbClient.send(command);
+  return response.Items.map(i => unmarshall(i));
 }
 
 export async function login(loginData) {
@@ -92,17 +105,25 @@ export const usersHandler = async (event, context) => {
       responseBody = JSON.stringify(await login(requestBody))
     } else if (event.pathParameters !== null && event.pathParameters.id !== null) {
       const id = event.pathParameters.id;
-      const user = await getUser(id);
-      responseBody = JSON.stringify(user);
+      if (event.path.endsWith('sub') && event.httpMethod === 'POST') {
+        command = new UpdateItemCommand({
+          TableName: "betsy_users",
+          Key: { "id": { "S": id } },
+          UpdateExpression: "SET subscription = :subscription",
+          ExpressionAttributeValues: marshall({
+            ":subscription": requestBody,
+          }),
+        });
+        await dbClient.send(command);
+        responseBody = JSON.stringify({
+          message: "Successfully updated user subscription",
+        });
+      } else {
+        const user = await getUser(id);
+        responseBody = JSON.stringify(user);
+      }
     } else {
-      command = new ScanCommand({ 
-        TableName: "betsy_users",
-        ConsistentRead: true,
-      });
-      const response = await dbClient.send(command);
-      // console.log(JSON.stringify(response));
-      const users = response.Items.map(i => unmarshall(i));
-      responseBody = JSON.stringify(users);
+      responseBody = JSON.stringify(await getAllUsers());
     }
 
   } catch (e) {
@@ -522,6 +543,37 @@ async function setTaskState(id, newState) {
   await dbClient.send(command);
 }
 
+async function notifyAllUsers({ message }) {
+  const users = await getAllUsers();
+  const data = {
+    body: message,
+  };
+  for (const user of users) {
+    if (user.subscription) {
+      const options = {
+        vapidDetails: {
+          subject: 'https://betsytasks.site',
+          publicKey: APPLICATION_SERVER_PUBLIC_KEY,
+          privateKey: APPLICATION_SERVER_PRIVATE_KEY,
+        },
+        // 1 hour in seconds.
+        TTL: 60 * 60
+      };
+
+      try {
+        console.log(JSON.stringify(user.subscription));
+        await webpush.sendNotification(
+          user.subscription,
+          JSON.stringify(data),
+          options
+        );
+      } catch (error) {
+        console.log(`Error while sending notification to user with id: ${user.id}. Error: ${error}`);
+      }
+    }
+  }
+}
+
 export const actionsHandler = async (event, context) => {
   let statusCode = 200;
   let responseBody = "";
@@ -539,6 +591,9 @@ export const actionsHandler = async (event, context) => {
         "task": task,
         "bet": bet,
       });
+      console.log("before notifyAllUsers");
+      await notifyAllUsers({ message: `new task ${task.title}` });
+      console.log("after notifyAllUsers");
     } else if (event.path === "/actions/set_task_state") {
       const id = requestBody.id;
       const newState = requestBody.task_state;
