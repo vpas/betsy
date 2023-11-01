@@ -89,8 +89,12 @@ export const AppContent = () => {
   
 
   useEffect(() => {
-    new NotificationsManager(context).init();
-  }, []);
+    if (context.notificationsManager) {
+      context.notificationsManager.context = context;
+    } else {
+      new NotificationsManager(context).init();
+    }
+  }, [context]);
 
   useEffect(() => {
     if (context.userId === null && cookies.user_id) {

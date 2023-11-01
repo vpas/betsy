@@ -1,4 +1,4 @@
-AWSTemplateFormatVersion: '2010-09-09'
+AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -9,6 +9,15 @@ Globals:
   Api:
     TracingEnabled: true
 Resources:
+  ApiGatewayApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Cors:
+        AllowMethods: "'POST, GET'"
+        AllowHeaders: "*"
+        AllowOrigin: "*"
+        MaxAge: "'600'"
   BetsyAPIUsers:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -16,7 +25,7 @@ Resources:
       Handler: app.usersHandler
       Runtime: nodejs18.x
       Architectures:
-      - x86_64
+        - x86_64
       Events:
         UsersList:
           Type: Api
@@ -38,7 +47,7 @@ Resources:
           Properties:
             Path: /users/{id}/sub
             Method: post
-    
+
   BetsyAPITasks:
     Type: AWS::Serverless::Function
     Properties:
@@ -46,7 +55,7 @@ Resources:
       Handler: app.tasksHandler
       Runtime: nodejs18.x
       Architectures:
-      - x86_64
+        - x86_64
       Events:
         TasksList:
           Type: Api
@@ -76,7 +85,7 @@ Resources:
       Handler: app.betsHandler
       Runtime: nodejs18.x
       Architectures:
-      - x86_64
+        - x86_64
       Events:
         BetsList:
           Type: Api
@@ -98,7 +107,7 @@ Resources:
           Properties:
             Path: /bets/
             Method: post
-    
+
   BetsyAPIActions:
     Type: AWS::Serverless::Function
     Properties:
@@ -106,7 +115,7 @@ Resources:
       Handler: app.actionsHandler
       Runtime: nodejs18.x
       Architectures:
-      - x86_64
+        - x86_64
       Events:
         ActionsCreateTaskWithBet:
           Type: Api
@@ -118,8 +127,7 @@ Resources:
           Properties:
             Path: /actions/set_task_state
             Method: post
-          
-        
+
     Metadata: # Manage esbuild properties
       BuildProperties:
         UseNpmCi: True
