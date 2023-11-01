@@ -11,7 +11,7 @@ import './App.css';
 
 function App() {
   const axiosInstance = axios.create({
-    baseURL: 'https://vvp1a5v8v7.execute-api.eu-central-1.amazonaws.com/Prod/',
+    baseURL: 'https://pjuc4dus7b.execute-api.eu-central-1.amazonaws.com/prod/',
     timeout: 20000,
   });
   // const axiosInstance = axios.create({

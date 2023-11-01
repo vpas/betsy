@@ -4,7 +4,6 @@ Transform: AWS::Serverless-2016-10-31
 Globals:
   Function:
     Timeout: 100
-
     Tracing: Active
   Api:
     TracingEnabled: true
@@ -12,12 +11,13 @@ Resources:
   ApiGatewayApi:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: Prod
+      StageName: prod
       Cors:
         AllowMethods: "'POST, GET'"
-        AllowHeaders: "*"
-        AllowOrigin: "*"
+        AllowHeaders: "'*'"
+        AllowOrigin: "'*'"
         MaxAge: "'600'"
+        # AllowCredentials: true
   BetsyAPIUsers:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -32,21 +32,29 @@ Resources:
           Properties:
             Path: /users
             Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
         UserGet:
           Type: Api
           Properties:
             Path: /users/{id}
             Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
         UserLogin:
           Type: Api
           Properties:
             Path: /users/login
             Method: post
+            RestApiId:
+              Ref: ApiGatewayApi
         UserSubscription:
           Type: Api
           Properties:
             Path: /users/{id}/sub
             Method: post
+            RestApiId:
+              Ref: ApiGatewayApi
 
   BetsyAPITasks:
     Type: AWS::Serverless::Function
@@ -62,21 +70,29 @@ Resources:
           Properties:
             Path: /tasks
             Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
         TaskGet:
           Type: Api
           Properties:
             Path: /tasks/{id}
             Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
         TaskGetBets:
           Type: Api
           Properties:
             Path: /tasks/{id}/bets
             Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
         TaskUpdate:
           Type: Api
           Properties:
             Path: /tasks/{id}
             Method: post
+            RestApiId:
+              Ref: ApiGatewayApi
 
   BetsyAPIBets:
     Type: AWS::Serverless::Function
@@ -92,21 +108,29 @@ Resources:
           Properties:
             Path: /bets
             Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
         BetGet:
           Type: Api
           Properties:
             Path: /bets/{id}
             Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
         BetUpdate:
           Type: Api
           Properties:
             Path: /bets/{id}
             Method: post
+            RestApiId:
+              Ref: ApiGatewayApi
         BetCreate:
           Type: Api
           Properties:
-            Path: /bets/
+            Path: /bets
             Method: post
+            RestApiId:
+              Ref: ApiGatewayApi
 
   BetsyAPIActions:
     Type: AWS::Serverless::Function
@@ -122,11 +146,15 @@ Resources:
           Properties:
             Path: /actions/create_task_with_bet
             Method: post
+            RestApiId:
+              Ref: ApiGatewayApi
         ActionsSetTaskState:
           Type: Api
           Properties:
             Path: /actions/set_task_state
             Method: post
+            RestApiId:
+              Ref: ApiGatewayApi
 
     Metadata: # Manage esbuild properties
       BuildProperties:
