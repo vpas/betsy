@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { useImmer } from 'use-immer';
 import { CookiesProvider } from 'react-cookie';
 import axios from 'axios';
@@ -32,6 +32,16 @@ function App() {
   if (!context.updateContext) {
     updateContext(c => { c.updateContext = updateContext; });
   }
+
+  useEffect(() => {
+    navigator.serviceWorker.addEventListener("message", (event) => {
+      console.log(`Notification about taskId: ${event.data.taskId}`);
+      updateContext(c => {
+        c.shouldRefetch = true;
+        c.notificationTaskId = event.data.taskId;
+      });
+    });
+  }, []);
 
   return (
     <div className="App">

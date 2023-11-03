@@ -187,6 +187,12 @@ export const tasksHandler = async (event, context) => {
           },
         });
         await dbClient.send(command);
+        const task = await getTask(id);
+        await sendNotifications({ 
+          message: `task "${task.title}" updated`,
+          taskId: task.id,
+          excludeUserId: task.created_by,
+        });
       }
     } else {
       command = new ScanCommand({
@@ -319,6 +325,14 @@ export const betsHandler = async (event, context) => {
           term_hours: requestBody.term_hours,
         }
         await updateBet(updateData);
+        
+        const bet = await getBet(id);
+        const task = await getTask(bet.task_id);
+        await sendNotifications({ 
+          message: `bet "${task.title}" updated`,
+          taskId: task.id,
+          excludeUserId: bet.created_by,
+        });
       }
     } else {
       if (event.httpMethod === 'GET') {
@@ -333,6 +347,14 @@ export const betsHandler = async (event, context) => {
       } else if (event.httpMethod === 'POST') {
         const bet = requestBody;
         await createBet(bet);
+        
+        const task = await getTask(bet.task_id);
+        await sendNotifications({ 
+          message: `new bet "${task.title}" created`,
+          taskId: task.id,
+          excludeUserId: bet.created_by,
+        });
+        
         responseBody = JSON.stringify(bet);
       }
     }
@@ -386,6 +408,11 @@ async function createTaskWithBet(task, bet) {
   };
   const command = new TransactWriteItemsCommand(input);
   const response = await dbClient.send(command);
+
+  return {
+    task: task,
+    bet: bet,
+  }
 }
 
 async function getTask(id) {
@@ -543,13 +570,25 @@ async function setTaskState(id, newState) {
   await dbClient.send(command);
 }
 
-async function notifyAllUsers({ message }) {
-  const users = await getAllUsers();
+async function getAllUsersInvolved(taskId) {
+  const bets = await getAllTaskBets(taskId)
+  return bets.map(b => b.created_by);
+}
+
+async function sendNotifications({ taskId, message, excludeUserId, notifyAll = false }) {
+  let users;
+  if (notifyAll) {
+    users = await getAllUsers();
+  } else {
+    users = await getAllUsersInvolved(taskId);
+  }
   const data = {
+    title: "Betsy",
     body: message,
+    task_id: taskId,
   };
   for (const user of users) {
-    if (user.subscription) {
+    if (user.subscription && user.id !== excludeUserId) {
       const options = {
         vapidDetails: {
           subject: 'https://betsytasks.site',
@@ -584,20 +623,27 @@ export const actionsHandler = async (event, context) => {
     const requestBody = JSON.parse(event.body);
     console.log("requestBody: \n" + JSON.stringify(requestBody));
     if (event.path === "/actions/create_task_with_bet") {
-      const task = requestBody.task;
-      const bet = requestBody.bet;
-      await createTaskWithBet(task, bet);
+      const { task, bet } = await createTaskWithBet(requestBody.task, requestBody.bet);
       responseBody = JSON.stringify({
         "task": task,
         "bet": bet,
       });
-      console.log("before notifyAllUsers");
-      await notifyAllUsers({ message: `new task ${task.title}` });
-      console.log("after notifyAllUsers");
+      await sendNotifications({ 
+        message: `new task ${task.title}`,
+        taskId: task.id,
+        excludeUserId: task.created_by,
+        notifyAll: true,
+      });
     } else if (event.path === "/actions/set_task_state") {
       const id = requestBody.id;
       const newState = requestBody.task_state;
       await setTaskState(id, newState);
+      const task = await getTask(id);
+      await sendNotifications({ 
+        message: `task "${task.title}" updated`,
+        taskId: task.id,
+        excludeUserId: task.created_by,
+      });
     }
   } catch (e) {
     console.log(e);

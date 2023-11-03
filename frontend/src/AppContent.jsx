@@ -18,6 +18,7 @@ import { calcWinPayouts } from "Utils";
 import { NotificationsManager } from "NotificationsManager"
 
 import './AppContent.css';
+import { TASK_STATES_ACTIVE } from 'Consts';
 
 const ALL_SCREENS = [
   Bets,
@@ -30,6 +31,9 @@ const ALL_SCREENS = [
 ];
 
 export const AppContent = () => {
+  const currentUrl = window.location.href;
+  console.log(currentUrl);
+  
   const context = useContext(AppContext);
   const [cookies, setCookie] = useCookies(['user_id']);
   const [loading, setLoading] = useState(false);
@@ -103,6 +107,35 @@ export const AppContent = () => {
       refetch();
     }
   });
+
+  useEffect(() => {
+    if (!context.shouldRefetch && context.tasks && context.notificationTaskId) {
+      const task = context.tasks.find(t => t.id === context.notificationTaskId);
+      const bet = task.bets.find(b => b.created_by === context.userId);
+      if (TASK_STATES_ACTIVE.has(task.task_state)) {
+        context.updateContext(c => {
+          if (bet) {
+            c.prevScreenId = Bets.name;
+          } else {
+            c.prevScreenId = Explore.name;
+          }
+          c.activeScreenId = CreateEditTask.name;
+          c.inputTask = task;
+          c.inputBet = bet;
+
+          context.notificationTaskId = null;
+        });
+      } else {
+        context.updateContext(c => {
+          c.prevScreenId = History.name;
+          c.activeScreenId = TaskInfo.name;
+          c.inputTask = task;
+
+          context.notificationTaskId = null;
+        });
+      }
+    }
+  },[context])
 
 
   function setUser(user) {
