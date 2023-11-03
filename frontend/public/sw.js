@@ -21,6 +21,7 @@ self.addEventListener("notificationclick", (event) => {
       console.log(`[Service Worker] clients.length: ${allClients.length}`);
       if (allClients.length > 0) {
         const client = allClients[0];
+        console.log(`[Service Worker] postMessage data: ${JSON.stringify(event.notification.data)}`);
         client.postMessage(event.notification.data);
       }
     })(),

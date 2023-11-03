@@ -44,6 +44,8 @@ export const Profile = () => {
         } else {
           context.notificationsManager.subscribeUser();
         }
+      } else {
+        await context.notificationsManager.init();
       }
     }
 

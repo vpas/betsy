@@ -41,6 +41,7 @@ export class NotificationsManager {
       console.warn('Push messaging is not supported');
       this.context.updateContext(c => {
         c.isNotificationsSupported = false;
+        c.subscribeButtonEnabled = true;
       });
     }
   }

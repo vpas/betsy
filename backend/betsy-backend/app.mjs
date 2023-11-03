@@ -187,12 +187,12 @@ export const tasksHandler = async (event, context) => {
           },
         });
         await dbClient.send(command);
-        const task = await getTask(id);
-        await sendNotifications({ 
-          message: `task "${task.title}" updated`,
-          taskId: task.id,
-          excludeUserId: task.created_by,
-        });
+        // const task = await getTask(id);
+        // await sendNotifications({ 
+        //   message: `task "${task.title}" updated`,
+        //   taskId: task.id,
+        //   excludeUserId: task.created_by,
+        // });
       }
     } else {
       command = new ScanCommand({
@@ -329,7 +329,7 @@ export const betsHandler = async (event, context) => {
         const bet = await getBet(id);
         const task = await getTask(bet.task_id);
         await sendNotifications({ 
-          message: `bet "${task.title}" updated`,
+          message: `Task "${task.title}" updated`,
           taskId: task.id,
           excludeUserId: bet.created_by,
         });
@@ -350,7 +350,7 @@ export const betsHandler = async (event, context) => {
         
         const task = await getTask(bet.task_id);
         await sendNotifications({ 
-          message: `new bet "${task.title}" created`,
+          message: `New bet for task "${task.title}"`,
           taskId: task.id,
           excludeUserId: bet.created_by,
         });
@@ -629,7 +629,7 @@ export const actionsHandler = async (event, context) => {
         "bet": bet,
       });
       await sendNotifications({ 
-        message: `new task ${task.title}`,
+        message: `New task ${task.title}`,
         taskId: task.id,
         excludeUserId: task.created_by,
         notifyAll: true,
@@ -640,7 +640,7 @@ export const actionsHandler = async (event, context) => {
       await setTaskState(id, newState);
       const task = await getTask(id);
       await sendNotifications({ 
-        message: `task "${task.title}" updated`,
+        message: `Task "${task.title}" updated`,
         taskId: task.id,
         excludeUserId: task.created_by,
       });

@@ -31,9 +31,6 @@ const ALL_SCREENS = [
 ];
 
 export const AppContent = () => {
-  const currentUrl = window.location.href;
-  console.log(currentUrl);
-  
   const context = useContext(AppContext);
   const [cookies, setCookie] = useCookies(['user_id']);
   const [loading, setLoading] = useState(false);
@@ -110,28 +107,35 @@ export const AppContent = () => {
 
   useEffect(() => {
     if (!context.shouldRefetch && context.tasks && context.notificationTaskId) {
+      console.log("opening task from notification");
       const task = context.tasks.find(t => t.id === context.notificationTaskId);
       const bet = task.bets.find(b => b.created_by === context.userId);
       if (TASK_STATES_ACTIVE.has(task.task_state)) {
         context.updateContext(c => {
+          console.log("Setting c.activeScreenId = CreateEditTask.name");
           if (bet) {
             c.prevScreenId = Bets.name;
+            c.activeTabId = Bets.name;
           } else {
             c.prevScreenId = Explore.name;
+            c.activeTabId = Explore.name;
           }
           c.activeScreenId = CreateEditTask.name;
           c.inputTask = task;
           c.inputBet = bet;
 
-          context.notificationTaskId = null;
+          c.notificationTaskId = null;
         });
       } else {
         context.updateContext(c => {
+          console.log("Setting c.activeScreenId = TaskInfo.name");
+          
           c.prevScreenId = History.name;
+          c.activeTabId = History.name;
           c.activeScreenId = TaskInfo.name;
           c.inputTask = task;
 
-          context.notificationTaskId = null;
+          c.notificationTaskId = null;
         });
       }
     }

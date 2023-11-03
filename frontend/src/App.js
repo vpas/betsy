@@ -34,11 +34,13 @@ function App() {
   }
 
   useEffect(() => {
+    console.log("adding message listener");
     navigator.serviceWorker.addEventListener("message", (event) => {
-      console.log(`Notification about taskId: ${event.data.taskId}`);
+      console.log(`Notification data: ${JSON.stringify(event.data)}`);
+      console.log(`Notification about taskId: ${event.data.task_id}`);
       updateContext(c => {
         c.shouldRefetch = true;
-        c.notificationTaskId = event.data.taskId;
+        c.notificationTaskId = event.data.task_id;
       });
     });
   }, []);
