@@ -571,8 +571,8 @@ async function setTaskState(id, newState) {
 }
 
 async function getAllUsersInvolved(taskId) {
-  const bets = await getAllTaskBets(taskId)
-  return bets.map(b => b.created_by);
+  const bets = await getAllTaskBets(taskId);
+  return await Promise.all(bets.map(b => getUser(b.created_by)));
 }
 
 async function sendNotifications({ taskId, message, excludeUserId, notifyAll = false }) {
