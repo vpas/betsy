@@ -45,6 +45,20 @@ function App() {
     });
   }, []);
 
+  useEffect(() => {
+    console.log(`window.location.search: ${window.location.search}`);
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("task_id")) {
+      const taskId = urlParams.get("task_id");
+      console.log(`Url param taskId: ${taskId}`);
+      updateContext(c => {
+        c.shouldRefetch = true;
+        c.notificationTaskId = taskId;
+      });
+      window.history.replaceState(null, "", "/");
+    }
+  }, []);
+
   return (
     <div className="App">
       <CookiesProvider defaultSetOptions={{ path: '/' }}>
