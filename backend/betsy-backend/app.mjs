@@ -70,6 +70,16 @@ export async function getAllUsers({ groupId }) {
   return response.Items.map(i => unmarshall(i));
 }
 
+export async function getGroup(id) {
+  const command = new GetItemCommand({
+    TableName: "betsy_groups",
+    Key: { "id": { "S": id } },
+  });
+  const response = await dbClient.send(command);
+  const group = unmarshall(response.Item);
+  return group;
+}
+
 export async function getAllGroups() {
   const command = new ScanCommand({
     TableName: "betsy_groups",
@@ -99,6 +109,40 @@ export async function login(loginData) {
   }
   return loginResponse;
 }
+
+
+export const groupsHandler = async (event, context) => {
+  let statusCode = 200;
+  let responseBody = "";
+
+  try {
+    console.log(event.pathParameters);
+    console.log("fetching data from dynamodb");
+    if (event.pathParameters !== null && event.pathParameters.id !== null) {
+      const id = event.pathParameters.id;
+
+      const group = await getGroup(id);
+      responseBody = JSON.stringify(group);
+    } else {
+      const groups = await getAllGroups();
+      responseBody = JSON.stringify(groups);
+    }
+
+  } catch (e) {
+    console.log(e);
+    responseBody = e.toString();
+    statusCode = 500;
+  }
+
+  return {
+    "statusCode": statusCode,
+    "headers": {
+      ...DEFAULT_HEADERS,
+      "Content-Type": "application/json"
+    },
+    "body": responseBody
+  }
+};
 
 export const usersHandler = async (event, context) => {
   let statusCode = 200;

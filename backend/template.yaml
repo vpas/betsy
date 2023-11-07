@@ -18,6 +18,29 @@ Resources:
         AllowOrigin: "'*'"
         MaxAge: "'600'"
         # AllowCredentials: true
+  BetsyAPIGroups:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: betsy-backend/
+      Handler: app.groupsHandler
+      Runtime: nodejs18.x
+      Architectures:
+        - x86_64
+      Events:
+        GroupsList:
+          Type: Api
+          Properties:
+            Path: /groups
+            Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
+        GroupGet:
+          Type: Api
+          Properties:
+            Path: /groups/{id}
+            Method: get
+            RestApiId:
+              Ref: ApiGatewayApi
   BetsyAPIUsers:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:

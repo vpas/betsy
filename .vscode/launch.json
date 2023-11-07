@@ -1,18 +1,32 @@
 {
     "configurations": [
-        {
-            "type": "aws-sam",
-            "request": "direct-invoke",
-            "name": "backend:BetsyAPI",
-            "invokeTarget": {
-                "target": "template",
-                "templatePath": "${workspaceFolder}/backend/template.yaml",
-                "logicalId": "BetsyAPI"
-            },
-            "lambda": {
-                "payload": {},
-                "environmentVariables": {}
-            }
+      {
+        "type": "aws-sam",
+        "request": "direct-invoke",
+        "name": "backend:BetsyAPIUsers",
+        "invokeTarget": {
+          "target": "template",
+          "templatePath": "${workspaceFolder}/backend/template.yaml",
+          "logicalId": "BetsyAPIUsers"
+        },
+        "lambda": {
+          "payload": {},
+          "environmentVariables": {}
         }
+      },
+      {
+        "type": "aws-sam",
+        "request": "direct-invoke",
+        "name": "backend:BetsyAPI",
+        "invokeTarget": {
+          "target": "template",
+          "templatePath": "${workspaceFolder}/backend/template.yaml",
+          "logicalId": "BetsyAPI"
+        },
+        "lambda": {
+          "payload": {},
+          "environmentVariables": {}
+        }
+      }
     ]
 }
