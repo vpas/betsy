@@ -70,10 +70,12 @@ export const AppContent = () => {
     });
     try {
       setLoading(true);
+      const user = (await context.axios.get(`users/${context.userId}`)).data;
+      console.log(user);
       const [users, tasks, bets] = await Promise.all([
-        context.axios.get("users"),
-        context.axios.get("tasks"),
-        context.axios.get("bets"),
+        context.axios.get(`users?group_id=${user.group_id}`),
+        context.axios.get(`tasks?group_id=${user.group_id}`),
+        context.axios.get(`bets?group_id=${user.group_id}`),
       ]);
       setContextTasks({
         users: users.data,

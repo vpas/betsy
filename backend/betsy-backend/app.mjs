@@ -717,7 +717,7 @@ export const actionsHandler = async (event, context) => {
         taskId: task.id,
         excludeUserId: task.created_by,
         notifyAll: true,
-        groupId: task.groupId,
+        groupId: task.group_id,
       });
     } else if (event.path === "/actions/set_task_state") {
       const id = requestBody.id;
@@ -728,7 +728,7 @@ export const actionsHandler = async (event, context) => {
         message: `Task "${task.title}" updated`,
         taskId: task.id,
         excludeUserId: task.created_by,
-        groupId: task.groupId,
+        groupId: task.group_id,
       });
     }
   } catch (e) {
