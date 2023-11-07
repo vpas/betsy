@@ -57,9 +57,22 @@ export async function getUser(id) {
   return user;
 }
 
-export async function getAllUsers() {
+export async function getAllUsers({ groupId }) {
   const command = new ScanCommand({
     TableName: "betsy_users",
+    FilterExpression: "group_id = :group_id",
+    ExpressionAttributeValues: {
+      ":group_id": { "S": groupId },
+    },
+    ConsistentRead: true,
+  });
+  const response = await dbClient.send(command);
+  return response.Items.map(i => unmarshall(i));
+}
+
+export async function getAllGroups() {
+  const command = new ScanCommand({
+    TableName: "betsy_groups",
     ConsistentRead: true,
   });
   const response = await dbClient.send(command);
@@ -123,7 +136,8 @@ export const usersHandler = async (event, context) => {
         responseBody = JSON.stringify(user);
       }
     } else {
-      responseBody = JSON.stringify(await getAllUsers());
+      const users = await getAllUsers({ groupId: requestBody.group_id });
+      responseBody = JSON.stringify(users);
     }
 
   } catch (e) {
@@ -195,9 +209,15 @@ export const tasksHandler = async (event, context) => {
         // });
       }
     } else {
+      const groupId = requestBody.group_id;
       command = new ScanCommand({
         ...commandInput,
+        FilterExpression: "group_id = :group_id",
+        ExpressionAttributeValues: {
+          ":group_id": { "S": groupId },
+        },
         ConsistentRead: true,
+
       });
       const response = await dbClient.send(command);
       // console.log(JSON.stringify(response));
@@ -222,10 +242,13 @@ export const tasksHandler = async (event, context) => {
 };
 
 async function createBet(bet) {
+  const user = await getUser(bet.created_by);
+
   bet.id = uuidv4();
   bet.bet_condition = BET_CONDITION.NOT_DONE_IN_TIME;
   bet.created_at = new Date().toISOString();
   bet.updated_at = new Date().toISOString();
+  bet.group_id = user.group_id;
 
   const input = { // TransactWriteItemsInput
     TransactItems: [
@@ -325,19 +348,25 @@ export const betsHandler = async (event, context) => {
           term_hours: requestBody.term_hours,
         }
         await updateBet(updateData);
-        
+
         const bet = await getBet(id);
         const task = await getTask(bet.task_id);
-        await sendNotifications({ 
+        await sendNotifications({
           message: `Task "${task.title}" updated`,
           taskId: task.id,
           excludeUserId: bet.created_by,
+          groupId: task.group_id,
         });
       }
     } else {
       if (event.httpMethod === 'GET') {
+        const groupId = requestBody.group_id;
         command = new ScanCommand({
           ...commandInput,
+          FilterExpression: "group_id = :group_id",
+          ExpressionAttributeValues: {
+            ":group_id": { "S": groupId },
+          },
           ConsistentRead: true,
         });
         const response = await dbClient.send(command);
@@ -347,14 +376,15 @@ export const betsHandler = async (event, context) => {
       } else if (event.httpMethod === 'POST') {
         const bet = requestBody;
         await createBet(bet);
-        
+
         const task = await getTask(bet.task_id);
-        await sendNotifications({ 
+        await sendNotifications({
           message: `New bet for task "${task.title}"`,
           taskId: task.id,
           excludeUserId: bet.created_by,
+          groupId: task.group_id,
         });
-        
+
         responseBody = JSON.stringify(bet);
       }
     }
@@ -376,10 +406,13 @@ export const betsHandler = async (event, context) => {
 };
 
 async function createTaskWithBet(task, bet) {
+  const user = getUser(task.created_by);
+
   task.id = uuidv4();
   task.task_state = TASK_STATES.ACCEPT_BETS;
   task.created_at = new Date().toISOString();
   task.updated_at = new Date().toISOString();
+  task.group_id = user.group_id;
 
   bet.id = uuidv4();
   bet.task_id = task.id;
@@ -387,6 +420,7 @@ async function createTaskWithBet(task, bet) {
   bet.bet_condition = BET_CONDITION.DONE_IN_TIME;
   bet.created_at = new Date().toISOString();
   bet.updated_at = new Date().toISOString();
+  bet.group_id = user.group_id;
 
   const input = { // TransactWriteItemsInput
     TransactItems: [
@@ -575,10 +609,16 @@ async function getAllUsersInvolved(taskId) {
   return await Promise.all(bets.map(b => getUser(b.created_by)));
 }
 
-async function sendNotifications({ taskId, message, excludeUserId, notifyAll = false }) {
+async function sendNotifications({
+  taskId,
+  message,
+  excludeUserId,
+  notifyAll = false,
+  groupId,
+}) {
   let users;
   if (notifyAll) {
-    users = await getAllUsers();
+    users = await getAllUsers({ groupId: groupId });
   } else {
     users = await getAllUsersInvolved(taskId);
   }
@@ -628,21 +668,23 @@ export const actionsHandler = async (event, context) => {
         "task": task,
         "bet": bet,
       });
-      await sendNotifications({ 
+      await sendNotifications({
         message: `New task ${task.title}`,
         taskId: task.id,
         excludeUserId: task.created_by,
         notifyAll: true,
+        groupId: task.groupId,
       });
     } else if (event.path === "/actions/set_task_state") {
       const id = requestBody.id;
       const newState = requestBody.task_state;
       await setTaskState(id, newState);
       const task = await getTask(id);
-      await sendNotifications({ 
+      await sendNotifications({
         message: `Task "${task.title}" updated`,
         taskId: task.id,
         excludeUserId: task.created_by,
+        groupId: task.groupId,
       });
     }
   } catch (e) {

@@ -43,7 +43,7 @@ function App() {
         c.notificationTaskId = event.data.task_id;
       });
     });
-  }, []);
+  }, [updateContext]);
 
   useEffect(() => {
     console.log(`window.location.search: ${window.location.search}`);
@@ -57,7 +57,7 @@ function App() {
       });
       window.history.replaceState(null, "", "/");
     }
-  }, []);
+  }, [updateContext]);
 
   return (
     <div className="App">
