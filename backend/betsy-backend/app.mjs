@@ -180,7 +180,7 @@ export const usersHandler = async (event, context) => {
         responseBody = JSON.stringify(user);
       }
     } else {
-      const users = await getAllUsers({ groupId: event.queryParameters.group_id });
+      const users = await getAllUsers({ groupId: event.queryStringParameters.group_id });
       responseBody = JSON.stringify(users);
     }
 
@@ -253,7 +253,7 @@ export const tasksHandler = async (event, context) => {
         // });
       }
     } else {
-      const groupId = event.queryParameters.group_id;
+      const groupId = event.queryStringParameters.group_id;
       command = new ScanCommand({
         ...commandInput,
         FilterExpression: "group_id = :group_id",
@@ -404,7 +404,7 @@ export const betsHandler = async (event, context) => {
       }
     } else {
       if (event.httpMethod === 'GET') {
-        const groupId = event.queryParameters.group_id;
+        const groupId = event.queryStringParameters.group_id;
         command = new ScanCommand({
           ...commandInput,
           FilterExpression: "group_id = :group_id",
