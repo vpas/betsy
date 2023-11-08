@@ -450,7 +450,7 @@ export const betsHandler = async (event, context) => {
 };
 
 async function createTaskWithBet(task, bet) {
-  const user = getUser(task.created_by);
+  const user = await getUser(task.created_by);
 
   task.id = uuidv4();
   task.task_state = TASK_STATES.ACCEPT_BETS;
