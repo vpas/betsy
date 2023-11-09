@@ -36,7 +36,7 @@ export const AppContent = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   
-  function setContextTasks({ users, tasks, bets }) {
+  function setContextTasks({ users, tasks, bets, curUser }) {
     const usersById = {};
     users.forEach(u => usersById[u.id] = u);
 
@@ -58,7 +58,7 @@ export const AppContent = () => {
     tasks.forEach(t => calcWinPayouts(t));
     context.updateContext(c => {
       c.tasks = tasks;
-      c.user = usersById[c.userId];
+      c.user = curUser;
     });
   }
 
@@ -71,6 +71,8 @@ export const AppContent = () => {
     try {
       setLoading(true);
       const user = (await context.axios.get(`users/${context.userId}`)).data;
+      const group = (await context.axios.get(`groups/${user.group_id}`)).data;
+      user.group = group;
       console.log(user);
       const [users, tasks, bets] = await Promise.all([
         context.axios.get(`users?group_id=${user.group_id}`),
@@ -81,6 +83,7 @@ export const AppContent = () => {
         users: users.data,
         tasks: tasks.data,
         bets: bets.data,
+        curUser: user,
       });
     } catch (error) {
       setError(error);

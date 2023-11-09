@@ -63,6 +63,7 @@ export const Profile = () => {
                 <BackButton onClick={onBackButton}/>
                 <UserInfo className="user-info"/>
                 <label className="email">{user.email}</label>
+                <div id="profile-group">{user.group.name}</div>
                 <Button
                   text={notificationBtnText}
                   className="notifications-button"
