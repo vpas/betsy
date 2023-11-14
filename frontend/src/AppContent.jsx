@@ -152,7 +152,8 @@ export const AppContent = () => {
       c.userId = user.id;
       c.user = user;
     });
-    setCookie('user_id', user.id);
+    const secInMonth = 30 * 24 * 60 * 60;
+    setCookie('user_id', user.id, { maxAge: secInMonth });
   }
 
   function getActiveScreen() {
