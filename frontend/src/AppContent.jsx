@@ -56,6 +56,7 @@ export const AppContent = () => {
       }
     });
     tasks.forEach(t => calcWinPayouts(t));
+    tasks.sort((t1, t2) => new Date(t2.updated_at) - new Date(t1.updated_at));
     context.updateContext(c => {
       c.tasks = tasks;
       c.user = curUser;
